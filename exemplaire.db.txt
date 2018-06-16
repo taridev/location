@@ -1,0 +1,11 @@
+AA-222-AA Peugeot Auto 207 20000
+AA-230-AA Honda Moto 250 1000
+AA-24-AA Peugeot Auto 208 20000
+AKK-239-91 Peugeot Auto 208 20000
+ARK-90-91 Peugeot Auto 208 20000
+BB-8-BB Ferrari Auto Testarossa 100000
+BWD-239-75 Audi Auto A8 9999
+BZH-23-WW Mitsubishi Moto 500 2319
+FE-135-AK BMW Moto 1000 738
+IPI-114-3A Harley-Davidson Moto 1400 1225
+ZF-229-PA Peugeot Auto 207 200

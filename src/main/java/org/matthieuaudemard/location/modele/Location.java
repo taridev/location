@@ -24,7 +24,7 @@ public class Location {
 	/**
 	 * 
 	 */
-	private int numeroLocation = -1;
+	private Integer numeroLocation = -1;
 	/**
 	 * 
 	 */
@@ -57,7 +57,7 @@ public class Location {
 	 * @param dateRetourPrevue
 	 * @param dateRetour
 	 */
-	public Location(int numeroLocation, Emprunteur emprunteur, Exemplaire exemplaire, Date dateRetrait, Date dateRetourPrevue,
+	public Location(Integer numeroLocation, Emprunteur emprunteur, Exemplaire exemplaire, Date dateRetrait, Date dateRetourPrevue,
 			Date dateRetour, boolean assurance) {
 		super();
 		this.numeroLocation = numeroLocation;
@@ -74,11 +74,11 @@ public class Location {
 		this(-1, emprunteur, exemplaire, dateRetrait, dateRetourPrevue, null, assurance);
 	}
 
-	public int getNumeroLocation() {
+	public Integer getNumeroLocation() {
 		return numeroLocation;
 	}
 
-	public void setNumeroLocation(int numeroLocation) {
+	public void setNumeroLocation(Integer numeroLocation) {
 		this.numeroLocation = numeroLocation;
 	}
 
@@ -125,7 +125,7 @@ public class Location {
 	@Override
 	public String toString() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-		return numeroLocation + " " + emprunteur.getIdEmprunteur() + " " + exemplaire.getImmatriculation() + " " + (assurance ? "true" : false) + " " + 
+		return numeroLocation + " " + emprunteur.getIdEmprunteur() + " " + exemplaire.getImmatriculation() + " " + (assurance ? "true" : "false") + " " + 
 				format.format(dateRetrait) + " " + format.format(dateRetourPrevue) + " " + (dateRetour != null ? format.format(dateRetour) : "");
 	}
 

@@ -76,6 +76,9 @@ public class Adresse {
 		} catch (NoSuchElementException | IllegalStateException e) {
 			e.printStackTrace();
 		}
+		finally {
+			scan.close();
+		}
 
 	}
 

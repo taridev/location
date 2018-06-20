@@ -16,8 +16,8 @@ public class JTableLocation extends JTable {
 
 	public JTableLocation(TableModelLocation tableModelLocation) {
 		super(tableModelLocation);
-		JComboBox<String> comboEmprunteur = new JComboBox<String>();
-		JComboBox<String> comboExemplaire   = new JComboBox<String>();
+		JComboBox<String> comboEmprunteur = new JComboBox<>();
+		JComboBox<String> comboExemplaire   = new JComboBox<>();
 		
 		for(Emprunteur e : ((TableModelLocation)getModel()).getCtrl().getCtrlEmprunteur() ) {
 			comboEmprunteur.addItem(e.getIdEmprunteur() + " " + e.getNomEmprunteur() + " " + e.getPrenomEmprunteur());

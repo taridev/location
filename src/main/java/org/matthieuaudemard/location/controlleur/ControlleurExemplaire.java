@@ -7,12 +7,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import org.matthieuaudemard.location.modele.Auto;
+import org.matthieuaudemard.location.modele.Emprunteur;
 import org.matthieuaudemard.location.modele.Exemplaire;
 import org.matthieuaudemard.location.modele.Moto;
 
@@ -21,7 +21,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	/**
 	 * 
 	 */
-	ArrayList<Exemplaire> exemplaires = new ArrayList<Exemplaire>();
+	ArrayList<Exemplaire> exemplaires = new ArrayList<>();
 
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	private String source = "exemplaire.db.txt";
 
 	public ControlleurExemplaire() {
-
+		// Empty Constructor
 	}
 
 	@Override
@@ -44,52 +44,45 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	public int countMoto() {
 		return getMoto().size();
 	}
+	
+	
+	private void parseLine(String ligne) {
+		Scanner sc2 = new Scanner(ligne);
+		String immatriculation = sc2.next();
+		String marque = sc2.next();
+		String type = sc2.next();
+		if (type.equalsIgnoreCase("Auto")) {
+			exemplaires.add(new Exemplaire(immatriculation, new Auto(marque, sc2.next()), sc2.nextInt()));
+		}
+		else if (type.equalsIgnoreCase("Moto")) {
+			exemplaires.add(new Exemplaire(immatriculation, new Moto(marque, sc2.nextInt()), sc2.nextInt()));
+		}
+		sc2.close();
+	}
 
 	@Override
 	public void find() {
 		System.out.println("ControlleurExemplaire.find()>>");
-		exemplaires = new ArrayList<Exemplaire>();
+		exemplaires = new ArrayList<>();
 		File base = new File(source);
-		try {
-			// Ouverture d'un Scanner pour lire le fichier ligne par ligne
-			Scanner sc1 = new Scanner(base);
-			int nbLigne = 0;
-
+		int nbLigne = 0;
+		// Ouverture d'un Scanner pour lire le fichier ligne par ligne
+		try (Scanner sc1 = new Scanner(base);){
 			nbLigne++;
 
 			while (sc1.hasNextLine()) {
 				String ligne = sc1.nextLine();
 				// Ouverture d'un scanner pour parser chaque ligne
-				Scanner sc2 = new Scanner(ligne);
-				String immatriculation = sc2.next();
-				String marque = sc2.next();
-				String type = sc2.next();
+				parseLine(ligne);
+
 				nbLigne++;
-				try {
-					switch (type) {
-					case "Auto":
-						exemplaires.add(new Exemplaire(immatriculation, new Auto(marque, sc2.next()), sc2.nextInt()));
-						break;
-					case "Moto":
-						exemplaires.add(new Exemplaire(immatriculation, new Moto(marque, sc2.nextInt()), sc2.nextInt()));
-						break;
-					}
-
-				} catch (NoSuchElementException | IllegalStateException e) {
-					System.err.println("Trying to retrieve Exemplaire data from " + source + "Invalid line format at line " + nbLigne);
-				}
-
-				sc2.close();
 			}
 
-			sc1.close();
-
-		} catch (FileNotFoundException e) {
+		} catch (NullPointerException|FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
+		} catch (NoSuchElementException | IllegalStateException e) {
+			System.err.println("Trying to retrieve Exemplaire data from " + source + "Invalid line format at line " + nbLigne);
 		}
-
 		System.out.println("<<ControlleurEmprunteur.find()");
 
 	}
@@ -127,7 +120,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 		for (Exemplaire e : exemplaires) {
 			if (e.getVehicule() instanceof Moto) {
 				if (result == null)
-					result = new ArrayList<Exemplaire>();
+					result = new ArrayList<>();
 				result.add(e);
 			}
 		}
@@ -186,20 +179,21 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	@Override
 	public void save(String pathfile) {
 		System.out.println("Saving ...");
-		Scanner scanFile = new Scanner(pathfile);
-		FileWriter fstream;
+		
 
-		try {
-			fstream = new FileWriter(pathfile);
-			BufferedWriter out = new BufferedWriter(fstream);
-			StringBuilder result = new StringBuilder();
+		try (Scanner scanFile =
+				new Scanner(pathfile);
+			FileWriter fstream =
+				new FileWriter(pathfile);
+			BufferedWriter out =
+				new BufferedWriter(fstream)){
+			StringBuilder result =
+				new StringBuilder();
 			for (Exemplaire e : exemplaires) {
 				System.out.println("Saving id " + e.getImmatriculation() + "...");
 				result.append(e.toString() + "\n");
 			}
 			out.write(result.deleteCharAt(result.length() - 1).toString());
-			out.close();
-			scanFile.close();
 
 		} catch (IOException e1) {
 			System.err.println("IOException while trying to export emprunteurs to " + pathfile);
@@ -212,13 +206,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 
 	@Override
 	public void sort() {
-		Collections.sort(exemplaires, new Comparator<Exemplaire>() {
-
-			@Override
-			public int compare(Exemplaire arg0, Exemplaire arg1) {
-				return arg0.getImmatriculation().compareTo(arg1.getImmatriculation());
-			}
-		});
+		Collections.sort(exemplaires, (Exemplaire e1, Exemplaire e2)->e1.getImmatriculation().compareTo(e2.getImmatriculation()));
 	}
 
 	@Override

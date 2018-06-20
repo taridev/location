@@ -21,8 +21,9 @@ public class TableModelLocation extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = -807525530848101240L;
 	private ControlleurLocation ctrl;
-	private final String[] nomColonnes = { "Identifiant", "Emprunteur", "Véhicule", "Assurance", "Retrait",
+	private static final String[] nomColonnes = { "Identifiant", "Emprunteur", "Véhicule", "Assurance", "Retrait",
 			"Retour prévu", "Retour" };
+	private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-mm-dd");
 
 	public TableModelLocation(ControlleurExemplaire ctrlExemplaire, ControlleurEmprunteur ctrlEmprunteur) {
 		System.out.println("TableModelLocation.TableModelLocation()");
@@ -57,9 +58,7 @@ public class TableModelLocation extends AbstractTableModel {
 			case 4:
 				return false;
 			case 6:
-				if(getValueAt(row, 6) != "")
-					return false;
-				return true;
+				return (getValueAt(row, 6) == "");
 			default: return true;
 		}
 	}
@@ -96,15 +95,13 @@ public class TableModelLocation extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		Location selectedLocation = ctrl.getValueAt(row);
 		Object result = null;
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
 		
 		switch (col) {
 		case 0: // numéroLocation
 			result = selectedLocation.getNumeroLocation();
 			break;
 		case 1: // numEmprunteur + nomEmprunteur + prénomEmprunteur
-			result = selectedLocation.getEmprunteur().getIdEmprunteur() + " "
-					+ selectedLocation.getEmprunteur().getNomEmprunteur() + " "
+			result = selectedLocation.getEmprunteur().getNomEmprunteur() + " "
 					+ selectedLocation.getEmprunteur().getPrenomEmprunteur();
 			break;
 		case 2: // immatricuation
@@ -115,14 +112,14 @@ public class TableModelLocation extends AbstractTableModel {
 			break;
 		case 4: // dateRetraitVéhicule
 			result = (selectedLocation.getDateRetrait() == null ? ""
-					: format.format(selectedLocation.getDateRetrait()));
+					: DATEFORMAT.format(selectedLocation.getDateRetrait()));
 			break;
 		case 5: // dateRetourPrévuVéhicule
 			result = (selectedLocation.getDateRetourPrevue() == null ? ""
-					: format.format(selectedLocation.getDateRetourPrevue()));
+					: DATEFORMAT.format(selectedLocation.getDateRetourPrevue()));
 			break;
 		case 6: // dateRetour
-			result = (selectedLocation.getDateRetour() == null ? "" : format.format(selectedLocation.getDateRetour()));
+			result = (selectedLocation.getDateRetour() == null ? "" : DATEFORMAT.format(selectedLocation.getDateRetour()));
 			break;
 		default:
 			result = null;
@@ -151,24 +148,24 @@ public class TableModelLocation extends AbstractTableModel {
 			break;
 		case 4: // dateRetraitVéhicule
 			try {
-				l.setDateRetrait(new SimpleDateFormat("yyyy-mm-dd").parse(value.toString()));
+				l.setDateRetrait(DATEFORMAT.parse(value.toString()));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			break;
 		case 5: // dateRetourPrévuVéhicule
 			try {
-				l.setDateRetourPrevue(new SimpleDateFormat("yyyy-mm-dd").parse(value.toString()));
+				l.setDateRetourPrevue(DATEFORMAT.parse(value.toString()));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			break;
 		case 6: // dateRetour
-			try {
-				l.setDateRetour(new SimpleDateFormat("yyyy-mm-dd").parse(value.toString()));
+			try (Scanner scan = new Scanner(getValueAt(row, 1).toString())){
+				l.setDateRetour(DATEFORMAT.parse(value.toString()));
 				if(l.getDateRetour() != null) {
 					@SuppressWarnings("resource")
-					int eId = new Scanner(getValueAt(row, 1).toString()).nextInt();
+					int eId = scan.nextInt();
 					Emprunteur e = ctrl.getCtrlEmprunteur().getById(eId);
 					e.ramener(ctrl.getById((int)getValueAt(row, 0)));
 					System.out.println("ramenage de :" + e.getIdEmprunteur());

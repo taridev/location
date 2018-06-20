@@ -68,12 +68,12 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 		File base = new File(source);
 
 		emprunteurs = new ArrayList<Emprunteur>();
+
+		int nbLigne = 0;
 		
-		
-		try {
+		try (Scanner sc1 = new Scanner(base);){
 			// Ouverture d'un Scanner pour lire le fichier ligne par ligne
-			Scanner sc1 = new Scanner(base);
-			int nbLigne = 0;
+			
 			lastInsertId = getLastInsertId();
 
 			if (sc1.hasNextLine())
@@ -84,29 +84,27 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 			while (sc1.hasNextLine()) {
 				String ligne = sc1.nextLine();
 				// Ouverture d'un scanner pour parser chaque ligne
-				Scanner sc2 = new Scanner(ligne);
+				
 				nbLigne++;
-				try {
-					Emprunteur e = new Emprunteur(sc2.nextInt(), sc2.next(), sc2.next(),
-							sc2.useDelimiter("\\r").next());
-					emprunteurs.add(e); // Création d'un emprunteur et ajout à la liste
-				} catch (NoSuchElementException | IllegalStateException e) {
-					System.err.println("Invalid line format at line " + nbLigne + " in " + source);
-				}
-
-				sc2.close();
+				parseLine(ligne);
 			}
 
-			sc1.close();
-
-		} catch (FileNotFoundException e) {
+		} catch (NullPointerException|FileNotFoundException e) {
 			e.printStackTrace();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
+		} catch (NoSuchElementException | IllegalStateException e) {
+			System.err.println("Invalid line format at line " + nbLigne + " in " + source);
 		}
 
 		System.out.println("<<ControlleurEmprunteur.find()");
 
+	}
+	
+	private void parseLine(String ligne) {
+		try (Scanner sc2 = new Scanner(ligne)) {
+			Emprunteur e = new Emprunteur(sc2.nextInt(), sc2.next(), sc2.next(),
+					sc2.useDelimiter("\\r").next());
+			emprunteurs.add(e); // Création d'un emprunteur et ajout à la liste
+		}
 	}
 
 	/**
@@ -151,7 +149,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 		// On recherche l'id de l'élement à mettre à jour
 		for (Emprunteur e : emprunteurs)
 			if (e.getIdEmprunteur() == element.getIdEmprunteur())
-				e = element;
+				e = new Emprunteur(element);
 
 	}
 
@@ -206,13 +204,15 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	 */
 	@Override
 	public void save(String pathfile) {
+		
 		System.out.println("Saving ...");
-		Scanner scanFile = new Scanner(pathfile);
-		FileWriter fstream;
-
-		try {
-			fstream = new FileWriter(pathfile);
-			BufferedWriter out = new BufferedWriter(fstream);
+		
+		try (Scanner scanFile =
+				new Scanner(pathfile);
+			FileWriter fstream =
+				new FileWriter(pathfile);
+			BufferedWriter out =
+				new BufferedWriter(fstream);){
 			StringBuilder result = new StringBuilder();
 			result.append(lastInsertId + "\n");
 			for (Emprunteur e : emprunteurs) {
@@ -220,9 +220,6 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 				result.append(e.toString() + "\n");
 			}
 			out.write(result.deleteCharAt(result.length() - 1).toString());
-			out.close();
-			scanFile.close();
-
 		} catch (IOException e1) {
 			System.err.println("IOException while trying to export emprunteurs to " + pathfile);
 		}
@@ -258,12 +255,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	 */
 	@Override
 	public void sort() {
-		Collections.sort(emprunteurs, new Comparator<Emprunteur>() {
-			@Override
-			public int compare(Emprunteur arg0, Emprunteur arg1) {
-				return arg0.getIdEmprunteur() - arg1.getIdEmprunteur();
-			}
-		});
+		Collections.sort(emprunteurs, (Emprunteur e1, Emprunteur e2)->e1.getIdEmprunteur() -e2.getIdEmprunteur());
 	}
 
 	
@@ -275,9 +267,9 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 		Scanner sc;
 		try {
 			sc = new Scanner(input);
-			int lastInsertId = sc.nextInt();
+			int lastInsertIdFound = sc.nextInt();
 			sc.close();
-			return lastInsertId;
+			return lastInsertIdFound;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return -1;

@@ -37,6 +37,7 @@ public class Auto extends Vehicule {
 	/* (non-Javadoc)
 	 * @see modele.Vehicule#toString()
 	 */
+	@Override
 	public String toString() {
 		return super.toString() + " Auto " + modele;
 	}

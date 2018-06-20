@@ -65,9 +65,8 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 		
 		locations = new ArrayList<Location>();
 		
-		try {
+		try (Scanner sc1 = new Scanner(base)){
 			// Ouverture d'un Scanner pour lire le fichier ligne par ligne
-			Scanner sc1 = new Scanner(base);
 			int nbLigne = 0;
 			lastInsertId = getLastInsertId();
 
@@ -85,7 +84,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 					int numLocation = sc2.nextInt();
 					int numEmprunteur = sc2.nextInt();
 					String immatriculation = sc2.next();
-					boolean assurance = sc2.next().equals("true") ? true : false;
+					boolean assurance = sc2.next().equals("true");
 					DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
 					Date dateRetrait = format.parse(sc2.next());
 					Date dateRetourPrevue = format.parse(sc2.next());
@@ -200,18 +199,18 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	@Override
 	public void save(String pathfile) {
 		System.out.println("Saving ...");
-		Scanner scanFile = new Scanner(pathfile);
-		FileWriter fstream;
-
-		try {
-			fstream = new FileWriter(pathfile);
-			BufferedWriter out = new BufferedWriter(fstream);
+		
+		try (
+			Scanner scanFile =
+				new Scanner(pathfile);
+			FileWriter fstream =
+				new FileWriter(pathfile);
+			BufferedWriter out =
+				new BufferedWriter(fstream)){
 			StringBuilder result = new StringBuilder();
 			result.append(lastInsertId + "\n");
 			result.append(this.toString());
 			out.write(result.deleteCharAt(result.length() - 1).toString());
-			out.close();
-			scanFile.close();
 
 		} catch (IOException e1) {
 			System.err.println("IOException while trying to export emprunteurs to " + pathfile);
@@ -230,13 +229,10 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 
 	@Override
 	public void sort() {
-		Collections.sort(locations, new Comparator<Location>() {
-
-			@Override
-			public int compare(Location arg0, Location arg1) {
-				return arg0.getNumeroLocation() - arg1.getNumeroLocation();
-			}
-		});
+		Collections.sort(
+				locations, 
+				(Location loc1, Location loc2) -> loc1.getNumeroLocation().compareTo(loc2.getNumeroLocation())
+		);
 	}
 
 	@Override
@@ -252,9 +248,9 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 		Scanner sc;
 		try {
 			sc = new Scanner(input);
-			int lastInsertId = sc.nextInt();
+			int lastInsertIdFound = sc.nextInt();
 			sc.close();
-			return lastInsertId;
+			return lastInsertIdFound;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return -1;

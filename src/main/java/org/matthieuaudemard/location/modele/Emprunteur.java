@@ -2,17 +2,19 @@ package org.matthieuaudemard.location.modele;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author matthieu
  *
  */
 public class Emprunteur implements Iterable<Location> {
+
 	private int idEmprunteur;
 	private String nomEmprunteur;
 	private String prenomEmprunteur;
 	private Adresse adresseEmprunteur;
-	private ArrayList<Location> locations = new ArrayList<Location>();
+	private List<Location> locations = new ArrayList<>();
 	
 	
 	/**
@@ -35,6 +37,14 @@ public class Emprunteur implements Iterable<Location> {
 	
 	public Emprunteur(String nomEmprunteur, String prenomEmprunteur, String adresseEmprunteur) {
 		this(-1, nomEmprunteur, prenomEmprunteur, new Adresse(adresseEmprunteur));
+	}
+	
+	public Emprunteur(Emprunteur e) {
+		this.idEmprunteur = e.idEmprunteur;
+		this.nomEmprunteur = e.nomEmprunteur;
+		this.prenomEmprunteur = e.prenomEmprunteur;
+		this.adresseEmprunteur = e.adresseEmprunteur;
+		this.locations = e.locations;
 	}
 	
 	public int getIdEmprunteur() {
@@ -98,7 +108,7 @@ public class Emprunteur implements Iterable<Location> {
 		return idEmprunteur + " " + nomEmprunteur + " " + prenomEmprunteur + " " + adresseEmprunteur;
 	}
 
-	public void setLocations(ArrayList<Location> l) {
+	public void setLocations(List<Location> l) {
 		this.locations = l;
 	}
 }

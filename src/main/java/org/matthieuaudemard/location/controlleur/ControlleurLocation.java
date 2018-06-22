@@ -10,12 +10,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.modele.Location;
 
 /**
@@ -28,10 +29,12 @@ import org.matthieuaudemard.location.modele.Location;
  */
 public class ControlleurLocation implements Controlleur<Location>, Iterable<Location> {
 	
+	static final Logger logger = Logger.getLogger(ControlleurLocation.class);
+	
 	/**
 	 * 
 	 */
-	private ArrayList<Location> locations = new ArrayList<Location>();
+	private ArrayList<Location> locations = new ArrayList<>();
 	private ControlleurEmprunteur ctrlEmprunteur;
 	private ControlleurExemplaire ctrlExemplaire;
 	
@@ -59,11 +62,11 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	@Override
 	public void find() {
 		
-		System.out.println("ControlleurLocation.find()>>");
+		logger.debug("ControlleurLocation.find()>>");
 		
 		File base = new File(source);
 		
-		locations = new ArrayList<Location>();
+		locations = new ArrayList<>();
 		
 		try (Scanner sc1 = new Scanner(base)){
 			// Ouverture d'un Scanner pour lire le fichier ligne par ligne
@@ -93,22 +96,18 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 					locations.add(l);
 					
 				} catch (NoSuchElementException | IllegalStateException e) {
-					System.err.println("Invalid line format at line " + nbLigne + " in " + source);
+					logger.error("Invalid line format at line " + nbLigne + " in " + source);
 				} catch (ParseException e) {
-					System.err.println("Invalid date format");
+					logger.error("Invalid date format");
+				} finally {
+					sc2.close();
 				}
-
-				sc2.close();
 			}
 
-			sc1.close();
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
+		} catch (NullPointerException|FileNotFoundException e) {
+			logger.error(e.getMessage());
 		} finally {
-			System.out.println("<<ControlleurLocation.find()");
+			logger.debug("<<ControlleurLocation.find()");
 		}
 		
 	}
@@ -132,8 +131,8 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	 * @param id
 	 * @return
 	 */
-	public ArrayList<Location> getByEmprunteurId(int id) {
-		ArrayList<Location> result = new ArrayList<Location>();
+	public List<Location> getByEmprunteurId(int id) {
+		ArrayList<Location> result = new ArrayList<>();
 		for(Location l : this) {
 			if(l.getEmprunteur() == null) continue;
 			if(l.getEmprunteur().getIdEmprunteur() == id) result.add(l);
@@ -171,7 +170,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	@Override
 	public void insert(Location element) throws Exception {
 		
-		System.out.println("ControlleurEmprunteur.insert()>>");
+		logger.debug("ControlleurEmprunteur.insert()>>");
 
 
 		// Si l'identifiant de l'emprunteur n'est pas encore défini
@@ -193,12 +192,12 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 		locations.add(element);
 		sort();
 
-		System.out.println("<<ControlleurEmprunteur.insert()");
+		logger.debug("<<ControlleurEmprunteur.insert()");
 	}
 
 	@Override
 	public void save(String pathfile) {
-		System.out.println("Saving ...");
+		logger.debug("Saving ...");
 		
 		try (
 			Scanner scanFile =
@@ -213,7 +212,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 			out.write(result.deleteCharAt(result.length() - 1).toString());
 
 		} catch (IOException e1) {
-			System.err.println("IOException while trying to export emprunteurs to " + pathfile);
+			logger.error("IOException while trying to export emprunteurs to " + pathfile);
 		}
 		
 		ctrlEmprunteur.save();
@@ -252,7 +251,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 			sc.close();
 			return lastInsertIdFound;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return -1;
 		}
 

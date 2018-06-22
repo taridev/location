@@ -1,12 +1,12 @@
 package org.matthieuaudemard.location.modele;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Moto extends Vehicule {
 
 	private int cylindree;
 	
-	public Moto(String m, ArrayList<Exemplaire> ex, int cylindree) {
+	public Moto(String m, List<Exemplaire> ex, int cylindree) {
 		super(m, ex);
 		this.cylindree = cylindree;
 	}
@@ -24,6 +24,7 @@ public class Moto extends Vehicule {
 		this.cylindree = cylindree;
 	}
 
+	@Override
 	public String toString() {
 		return super.toString() + " Moto " + cylindree;
 	}

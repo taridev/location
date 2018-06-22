@@ -4,18 +4,22 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.controlleur.ControlleurEmprunteur;
 import org.matthieuaudemard.location.modele.Adresse;
 import org.matthieuaudemard.location.modele.Emprunteur;
 
 public class TableModelEmprunteur extends AbstractTableModel {
+	
+	private static final Logger logger = LogManager.getLogger(TableModelEmprunteur.class);
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8096307685943874189L;
 	private ControlleurEmprunteur ctrl;
-	private final String [] nomColonnes = {"Identifiant", "Nom", "Prénom", "Adresse" };
+	private static final String [] nomColonnes = {"Identifiant", "Nom", "Prénom", "Adresse" };
 	
 	public TableModelEmprunteur() {
 		ctrl = new ControlleurEmprunteur();
@@ -26,11 +30,11 @@ public class TableModelEmprunteur extends AbstractTableModel {
 			
 			@Override
 			public void tableChanged(TableModelEvent arg0) {
-				System.out.println(
+				logger.debug(
 						"TableModelEmprunteur.TableModelEmprunteur().new TableModelListener() {...}.tableChanged()>>");
 				ctrl.sort();
 				ctrl.save();
-				System.out.println(
+				logger.debug(
 						"<<TableModelEmprunteur.TableModelEmprunteur().new TableModelListener() {...}.tableChanged()");
 			}
 		});
@@ -39,8 +43,7 @@ public class TableModelEmprunteur extends AbstractTableModel {
 	
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		if(col != 0) return true;
-		return false;
+		return (col != 0);
 	}
 	
 	
@@ -62,13 +65,10 @@ public class TableModelEmprunteur extends AbstractTableModel {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
     public Class getColumnClass(int column) {
-        switch (column) {
-        		case 0:
-        			return Integer.class;
-          
-            default:
-                return String.class;
+        if (column == 0) {
+        	return Integer.class;
         }
+        return String.class;
     }
 
 	@Override
@@ -101,7 +101,7 @@ public class TableModelEmprunteur extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		Emprunteur e = ctrl.getValueAt(row);
-		System.out.println("TableModelEmprunteur.setValueAt()");
+		logger.debug("TableModelEmprunteur.setValueAt()");
 		switch(col) {
 		case 0:
 			e.setIdEmprunteur(Integer.parseInt(value.toString()));
@@ -111,7 +111,7 @@ public class TableModelEmprunteur extends AbstractTableModel {
 			break;
 		case 2:
 			e.setPrenomEmprunteur(value.toString());
-			System.out.println("prenom");
+			logger.debug("prenom");
 			break;
 		case 3:
 			e.setAdresseEmprunteur(new Adresse(value.toString()));

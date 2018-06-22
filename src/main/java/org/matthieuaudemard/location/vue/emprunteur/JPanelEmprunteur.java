@@ -16,9 +16,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.modele.Emprunteur;
 
 public class JPanelEmprunteur extends JPanel {
+
+	static final Logger logger = Logger.getLogger(JPanelEmprunteur.class);
 
 	/**
 	 * 
@@ -43,7 +46,7 @@ public class JPanelEmprunteur extends JPanel {
 	/**
 	 * 
 	 */
-	Window parent;
+	Window wParent;
 
 	JButton btnAdd = new JButton("+");
 	JButton btnDel = new JButton("-");
@@ -91,7 +94,7 @@ public class JPanelEmprunteur extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				DialogEmprunteur d = new DialogEmprunteur(parent);
+				DialogEmprunteur d = new DialogEmprunteur(wParent);
 				d.setVisible(true);
 
 			}
@@ -118,7 +121,7 @@ public class JPanelEmprunteur extends JPanel {
 				try {
 					tblEmprunteur.print();
 				} catch (PrinterException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
 			}
 		});
@@ -138,7 +141,7 @@ public class JPanelEmprunteur extends JPanel {
 	 */
 	public JPanelEmprunteur(JFrame parent) {
 		super();
-		this.parent = parent;
+		this.wParent = parent;
 		prepareGUI();
 		prepareActionListener();
 	}
@@ -163,7 +166,7 @@ public class JPanelEmprunteur extends JPanel {
 		JPanel pnlControls = new JPanel();
 		JPanel pnlFields   = new JPanel();
 		
-		Window parent;
+		Window wParent;
 		
 		void prepareGUI() {
 			
@@ -248,7 +251,7 @@ public class JPanelEmprunteur extends JPanel {
 
 		public DialogEmprunteur(Window parent) {
 			super();
-			this.parent = parent;
+			this.wParent = parent;
 			
 			prepareGUI();
 			prepareActionListener();

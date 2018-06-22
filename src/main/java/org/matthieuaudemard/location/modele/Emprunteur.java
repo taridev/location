@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author matthieu
  *
  */
 public class Emprunteur implements Iterable<Location> {
+
+	static final Logger logger = Logger.getLogger(Emprunteur.class);
 
 	private int idEmprunteur;
 	private String nomEmprunteur;
@@ -87,11 +91,11 @@ public class Emprunteur implements Iterable<Location> {
 	}
 
 	public void ramener(Location location) {
-		System.out.println("Emprunteur.ramener()>>");
+		logger.debug("Emprunteur.ramener()>>");
 		if(locations.contains(location)) {
 			locations.remove(location);
 		}
-		System.out.println("<<Emprunteur.ramener()");
+		logger.debug("<<Emprunteur.ramener()");
 	}
 	
 	public void ramener(int index) {

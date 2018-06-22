@@ -8,16 +8,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.modele.Auto;
-import org.matthieuaudemard.location.modele.Emprunteur;
 import org.matthieuaudemard.location.modele.Exemplaire;
 import org.matthieuaudemard.location.modele.Moto;
 
 public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<Exemplaire> {
 
+	static final Logger logger = Logger.getLogger(ControlleurExemplaire.class);
+	
 	/**
 	 * 
 	 */
@@ -62,7 +65,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 
 	@Override
 	public void find() {
-		System.out.println("ControlleurExemplaire.find()>>");
+		logger.debug("Appel de la méthode find.");
 		exemplaires = new ArrayList<>();
 		File base = new File(source);
 		int nbLigne = 0;
@@ -79,12 +82,10 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 			}
 
 		} catch (NullPointerException|FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (NoSuchElementException | IllegalStateException e) {
-			System.err.println("Trying to retrieve Exemplaire data from " + source + "Invalid line format at line " + nbLigne);
+			logger.error("Trying to retrieve Exemplaire data from " + source + "Invalid line format at line " + nbLigne);
 		}
-		System.out.println("<<ControlleurEmprunteur.find()");
-
 	}
 
 	/**
@@ -99,13 +100,13 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 		return null;
 	}
 
-	public ArrayList<Exemplaire> getAuto() {
+	public List<Exemplaire> getAuto() {
 		ArrayList<Exemplaire> result = null;
 
 		for (Exemplaire e : exemplaires) {
 			if (e.getVehicule() instanceof Auto) {
 				if (result == null)
-					result = new ArrayList<Exemplaire>();
+					result = new ArrayList<>();
 				result.add(e);
 			}
 		}
@@ -114,7 +115,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 
 	}
 
-	public ArrayList<Exemplaire> getMoto() {
+	public List<Exemplaire> getMoto() {
 		ArrayList<Exemplaire> result = null;
 
 		for (Exemplaire e : exemplaires) {
@@ -137,7 +138,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	@Override
 	public void update(Exemplaire element) {
 		
-		System.out.println("ControlleurExemplaire.update()");
+		logger.debug("ControlleurExemplaire.update()");
 		// On recherche l'immatriculation de l'élement à mettre à jour
 		for (Exemplaire e : exemplaires)
 			if (e.getImmatriculation() == element.getImmatriculation())
@@ -154,7 +155,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	@Override
 	public void insert(Exemplaire element) throws Exception {
 
-		System.out.println("ControlleurExemplaire.insert()>>");
+		logger.debug("ControlleurExemplaire.insert()>>");
 
 		// Si l'élément à insérer existe déjà dans la liste alors Exception
 		if (exemplaires.contains(element))
@@ -172,13 +173,13 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 		// et sauvegarde dans la base
 		save();
 
-		System.out.println("<<ControlleurExemplaire.insert()");
+		logger.debug("<<ControlleurExemplaire.insert()");
 
 	}
 
 	@Override
 	public void save(String pathfile) {
-		System.out.println("Saving ...");
+		logger.debug("Saving ...");
 		
 
 		try (Scanner scanFile =
@@ -190,13 +191,13 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 			StringBuilder result =
 				new StringBuilder();
 			for (Exemplaire e : exemplaires) {
-				System.out.println("Saving id " + e.getImmatriculation() + "...");
+				logger.debug("Saving id " + e.getImmatriculation() + "...");
 				result.append(e.toString() + "\n");
 			}
 			out.write(result.deleteCharAt(result.length() - 1).toString());
 
 		} catch (IOException e1) {
-			System.err.println("IOException while trying to export emprunteurs to " + pathfile);
+			logger.error("IOException while trying to export emprunteurs to " + pathfile);
 		}
 	}
 
@@ -216,15 +217,15 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 
 	@Override
 	public String toString() {
-		System.out.println("ControlleurExemplaire.toString()>>");
+		logger.debug("ControlleurExemplaire.toString()>>");
 		StringBuilder result = new StringBuilder();
 
 		for (Exemplaire e : exemplaires) {
-			System.out.println(e);
+			logger.info(e);
 			result.append(e.toString() + "\n");
 		}
 		
-		System.out.println("<<ControlleurExemplaire.toString()");
+		logger.debug("<<ControlleurExemplaire.toString()");
 		return result.deleteCharAt(result.length() - 1).toString();
 	}
 

@@ -48,7 +48,7 @@ public class JPanelLocation extends JPanel {
 
 	JScrollPane scrollPan;
 
-	Window parent;
+	Window wParent;
 
 	JPanel panelOption = new JPanel();
 
@@ -62,7 +62,7 @@ public class JPanelLocation extends JPanel {
 	public JPanelLocation(ControlleurExemplaire ctrlExemplaire, ControlleurEmprunteur ctrlEmprunteur, JFrame parent) {
 		super();
 		tblLocation = new JTableLocation(new TableModelLocation(ctrlExemplaire, ctrlEmprunteur));
-		this.parent = parent;
+		this.wParent = parent;
 		prepareGUI();
 		prepareActionListener();
 	}
@@ -102,7 +102,7 @@ public class JPanelLocation extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				DialogLocation d = new DialogLocation(parent);
+				DialogLocation d = new DialogLocation(wParent);
 				d.setVisible(true);
 
 			}
@@ -142,10 +142,10 @@ public class JPanelLocation extends JPanel {
 				};
 
 				if(txt.length() == 0) {
-					(((TableRowSorter<TableModelExemplaire>) tblLocation.getRowSorter())).setRowFilter(null);
+					((TableRowSorter<TableModelExemplaire>) tblLocation.getRowSorter()).setRowFilter(null);
 				}
 				else {
-					(((TableRowSorter<TableModelExemplaire>) tblLocation.getRowSorter())).setRowFilter(filter);
+					((TableRowSorter<TableModelExemplaire>) tblLocation.getRowSorter()).setRowFilter(filter);
 			        }
 				
 			}
@@ -167,8 +167,8 @@ public class JPanelLocation extends JPanel {
 		JTextField txtDateRetrait = new JTextField(16);
 		JTextField txtDateRetour = new JTextField(16);
 
-		JComboBox<String> comboEmprunteur = new JComboBox<String>();
-		JComboBox<String> comboExemplaire = new JComboBox<String>();
+		JComboBox<String> comboEmprunteur = new JComboBox<>();
+		JComboBox<String> comboExemplaire = new JComboBox<>();
 
 		JCheckBox chkAssurance = new JCheckBox();
 
@@ -178,10 +178,10 @@ public class JPanelLocation extends JPanel {
 		JPanel pnlControls = new JPanel();
 		JPanel pnlFields = new JPanel();
 		
-		UtilDateModel model1 = new UtilDateModel();
+		transient UtilDateModel model1 = new UtilDateModel();
 		Properties p1 = new Properties();
 		
-		UtilDateModel model2 = new UtilDateModel();
+		transient UtilDateModel model2 = new UtilDateModel();
 		Properties p2 = new Properties();
 		
 		JDatePanelImpl datePanelRetrait = new JDatePanelImpl(model1, p1);
@@ -192,7 +192,7 @@ public class JPanelLocation extends JPanel {
 		// Don't know about the formatter, but there it is...
 		JDatePickerImpl datePickerRetour = new JDatePickerImpl(datePanelRetour, new DateLabelFormatter());
 
-		Window parent;
+		Window wParent;
 
 		void prepareGUI() {
 
@@ -248,12 +248,10 @@ public class JPanelLocation extends JPanel {
 			pnlFields.add(chkAssurance, c);
 			c.gridy++;
 
-			//pnlFields.add(txtDateRetrait, c);
 			pnlFields.add(datePickerRetrait, c);
 			c.gridy++;
 
 			pnlFields.add(datePickerRetour, c);
-			//pnlFields.add(txtDateRetour, c);
 			
 
 			add(pnlFields, BorderLayout.CENTER);
@@ -272,9 +270,9 @@ public class JPanelLocation extends JPanel {
 					Date dateRetrait = null;
 					Date dateRetourPrevue = null;
 					try {
-						//dateRetrait = new SimpleDateFormat("yyyy-mm-dd").parse(txtDateRetrait.getText());
+
 						dateRetrait = new SimpleDateFormat("yyyy-mm-dd").parse("" + datePanelRetrait.getModel().getYear() + "-" + datePanelRetrait.getModel().getMonth() + "-" + datePanelRetrait.getModel().getDay()); 
-						//dateRetourPrevue = new SimpleDateFormat("yyyy-mm-dd").parse(txtDateRetour.getText());
+
 						dateRetourPrevue = new SimpleDateFormat("yyyy-mm-dd").parse("" + datePanelRetour.getModel().getYear() + "-" + datePanelRetour.getModel().getMonth() + "-" + datePanelRetour.getModel().getDay());
 					} catch (ParseException e) {
 						e.printStackTrace();
@@ -299,7 +297,7 @@ public class JPanelLocation extends JPanel {
 
 		public DialogLocation(Window parent) {
 			super();
-			this.parent = parent;
+			this.wParent = parent;
 			
 			p1.put("text.today", "Today");
 			p1.put("text.month", "Month");

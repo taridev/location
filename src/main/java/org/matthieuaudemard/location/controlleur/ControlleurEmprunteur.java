@@ -7,11 +7,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.modele.Emprunteur;
 
 /**
@@ -23,11 +24,13 @@ import org.matthieuaudemard.location.modele.Emprunteur;
  * numEmprunteur nomEmprunter prenomEmprunteur numRueEmprunteur adresseEmprunteur codePostalEmprunteur villeEmprunteur
  */
 public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<Emprunteur> {
+	
+	private static final Logger logger = LogManager.getLogger(ControlleurEmprunteur.class);
 
 	/**
 	 * la liste de tous les emprunteurs
 	 */
-	private ArrayList<Emprunteur> emprunteurs = new ArrayList<Emprunteur>();
+	private ArrayList<Emprunteur> emprunteurs = new ArrayList<>();
 	/**
 	 * le chemin du fichier de base de données
 	 */
@@ -64,10 +67,10 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	@Override
 	public void find() {
 
-		System.out.println("ControlleurEmprunteur.find()>>");
+		logger.debug("Appel de la méthode find.");
 		File base = new File(source);
 
-		emprunteurs = new ArrayList<Emprunteur>();
+		emprunteurs = new ArrayList<>();
 
 		int nbLigne = 0;
 		
@@ -90,13 +93,10 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 			}
 
 		} catch (NullPointerException|FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} catch (NoSuchElementException | IllegalStateException e) {
-			System.err.println("Invalid line format at line " + nbLigne + " in " + source);
+			logger.error("Invalid line format at line " + nbLigne + " in " + source);
 		}
-
-		System.out.println("<<ControlleurEmprunteur.find()");
-
 	}
 	
 	private void parseLine(String ligne) {
@@ -113,17 +113,18 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	 * @return l'emprunteur correspondant ou null si il n'existe pas
 	 */
 	public Emprunteur findById(int id) {
-		System.out.println("ControlleurEmprunteur.findById()>>");
+		logger.debug("ControlleurEmprunteur.findById()>>");
 		
 		find();
 		
-		for (Emprunteur e : emprunteurs)
+		for (Emprunteur e : emprunteurs) {
 			if (e.getIdEmprunteur() == id) {
-				System.out.println("<<ControlleurEmprunteur.findById()");
+				logger.debug("<<ControlleurEmprunteur.findById()");
 				return e;
 			}
-		System.out.println("<<ControlleurEmprunteur.findById()");
+		}
 		
+		logger.debug("<<ControlleurEmprunteur.findById()");
 		return null;
 	}
 	
@@ -172,7 +173,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	@Override
 	public void insert(Emprunteur element) throws Exception {
 
-		System.out.println("ControlleurEmprunteur.insert()>>");
+		logger.debug("ControlleurEmprunteur.insert()>>");
 
 
 		// Si l'identifiant de l'emprunteur n'est pas encore défini
@@ -193,7 +194,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 		emprunteurs.add(element);
 		sort();
 
-		System.out.println("<<ControlleurEmprunteur.insert()");
+		logger.debug("<<ControlleurEmprunteur.insert()");
 
 	}
 
@@ -205,7 +206,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	@Override
 	public void save(String pathfile) {
 		
-		System.out.println("Saving ...");
+		logger.debug("Saving ...");
 		
 		try (Scanner scanFile =
 				new Scanner(pathfile);
@@ -216,12 +217,12 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 			StringBuilder result = new StringBuilder();
 			result.append(lastInsertId + "\n");
 			for (Emprunteur e : emprunteurs) {
-				System.out.println("Saving id " + e.getIdEmprunteur() + "...");
+				logger.debug("Saving id " + e.getIdEmprunteur() + "...");
 				result.append(e.toString() + "\n");
 			}
 			out.write(result.deleteCharAt(result.length() - 1).toString());
 		} catch (IOException e1) {
-			System.err.println("IOException while trying to export emprunteurs to " + pathfile);
+			logger.error("IOException while trying to export emprunteurs to " + pathfile);
 		}
 	}
 
@@ -255,7 +256,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	 */
 	@Override
 	public void sort() {
-		Collections.sort(emprunteurs, (Emprunteur e1, Emprunteur e2)->e1.getIdEmprunteur() -e2.getIdEmprunteur());
+		Collections.sort(emprunteurs, (Emprunteur e1, Emprunteur e2)->e1.getIdEmprunteur() - e2.getIdEmprunteur());
 	}
 
 	
@@ -271,7 +272,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 			sc.close();
 			return lastInsertIdFound;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 			return -1;
 		}
 

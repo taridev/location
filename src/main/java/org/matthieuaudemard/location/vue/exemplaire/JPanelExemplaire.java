@@ -20,12 +20,15 @@ import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.modele.Auto;
 import org.matthieuaudemard.location.modele.Exemplaire;
 import org.matthieuaudemard.location.modele.Moto;
 
 public class JPanelExemplaire extends JPanel {
 
+	static final Logger logger = Logger.getLogger(JPanelExemplaire.class);
+			
 	/**
 	 * 
 	 */
@@ -39,17 +42,12 @@ public class JPanelExemplaire extends JPanel {
 	/**
 	 * 
 	 */
-	private JScrollPane scrollPan;
-
-	/**
-	 * 
-	 */
 	private JPanel panelOption = new JPanel();
 
 	/**
 	 * 
 	 */
-	private Window parent;
+	private Window wParent;
 
 	private JButton btnAdd = new JButton("+");
 	private JButton btnDel = new JButton("-");
@@ -60,7 +58,7 @@ public class JPanelExemplaire extends JPanel {
 	/**
 	 * 
 	 */
-	private JComboBox<String> comboFiltre = new JComboBox<String>(strOptions);
+	private JComboBox<String> comboFiltre = new JComboBox<>(strOptions);
 	
 	public TableModelExemplaire getTableModel() {
 		return (TableModelExemplaire) tblExemplaire.getModel();
@@ -68,7 +66,7 @@ public class JPanelExemplaire extends JPanel {
 
 	public JPanelExemplaire(Window parent) {
 		super();
-		this.parent = parent;
+		this.wParent = parent;
 		prepareGUI();
 		prepareActionListener();
 	}
@@ -82,7 +80,7 @@ public class JPanelExemplaire extends JPanel {
 
 		setLayout(new BorderLayout());
 
-		scrollPan = new JScrollPane(tblExemplaire);
+		JScrollPane scrollPan = new JScrollPane(tblExemplaire);
 
 		c.gridx = 0;
 		c.gridy = 0;
@@ -114,7 +112,7 @@ public class JPanelExemplaire extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				DialogExemplaire d = new DialogExemplaire(parent);
+				DialogExemplaire d = new DialogExemplaire(wParent);
 				d.setVisible(true);
 
 			}
@@ -141,7 +139,7 @@ public class JPanelExemplaire extends JPanel {
 				try {
 					tblExemplaire.print();
 				} catch (PrinterException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage());
 				}
 			}
 		});
@@ -168,7 +166,7 @@ public class JPanelExemplaire extends JPanel {
 							return ((String) entry.getValue(2)).equals("Moto");
 						}
 					};
-					(((TableRowSorter<TableModelExemplaire>) tblExemplaire.getRowSorter())).setRowFilter(filterMoto);
+					((TableRowSorter<TableModelExemplaire>) tblExemplaire.getRowSorter()).setRowFilter(filterMoto);
 					break;
 				case "Auto":
 					RowFilter<Object, Object> filterAuto = new RowFilter<Object, Object>() {
@@ -176,7 +174,7 @@ public class JPanelExemplaire extends JPanel {
 							return ((String) entry.getValue(2)).equals("Auto");
 						}
 					};
-					(((TableRowSorter<TableModelExemplaire>) tblExemplaire.getRowSorter())).setRowFilter(filterAuto);
+					((TableRowSorter<TableModelExemplaire>) tblExemplaire.getRowSorter()).setRowFilter(filterAuto);
 					break;
 				default:
 					RowFilter<Object, Object> filterAll = new RowFilter<Object, Object>() {
@@ -184,7 +182,7 @@ public class JPanelExemplaire extends JPanel {
 							return true;
 						}
 					};
-					(((TableRowSorter<TableModelExemplaire>) tblExemplaire.getRowSorter())).setRowFilter(filterAll);
+					((TableRowSorter<TableModelExemplaire>) tblExemplaire.getRowSorter()).setRowFilter(filterAll);
 					break;
 				}
 			}
@@ -206,7 +204,7 @@ public class JPanelExemplaire extends JPanel {
 
 		JTextField txtImmatriculation = new JTextField(16);
 		JTextField txtMarque = new JTextField(16);
-		JComboBox<String> comboType = new JComboBox<String>(listeType);
+		JComboBox<String> comboType = new JComboBox<>(listeType);
 		JTextField txtModel = new JTextField(16);
 		JTextField txtKilometrage = new JTextField(16);
 
@@ -218,7 +216,7 @@ public class JPanelExemplaire extends JPanel {
 		JPanel pnlControls = new JPanel();
 		JPanel pnlFields = new JPanel();
 
-		Window parent;
+		Window wParent;
 
 		void prepareGUI() {
 
@@ -313,7 +311,7 @@ public class JPanelExemplaire extends JPanel {
 		}
 
 		public DialogExemplaire(Window parent) {
-			this.parent = parent;
+			this.wParent = parent;
 
 			prepareGUI();
 			prepareActionListener();

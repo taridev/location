@@ -6,11 +6,16 @@ package org.matthieuaudemard.location.modele;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 /**
  * @author matthieu
  * La classe Adresse définit 
  */
 public class Adresse {
+
+	static final Logger logger = Logger.getLogger(Adresse.class);
+
 	/**
 	 * 
 	 */
@@ -74,7 +79,7 @@ public class Adresse {
 
 			scan.close();
 		} catch (NoSuchElementException | IllegalStateException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		}
 		finally {
 			scan.close();

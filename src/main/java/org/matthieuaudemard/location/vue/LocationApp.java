@@ -25,7 +25,7 @@ public class LocationApp extends JFrame {
 	 * @param titre
 	 * @throws HeadlessException
 	 */
-	public LocationApp(String titre) throws HeadlessException {
+	public LocationApp(String titre) {
 		super(titre);
 		panelLocation = new JPanelLocation(panelExemplaire.getTableModel().getCtrl(), panelEmprunteur.getTableModel().getCtrl(), this);
 		tabPan.add(panelEmprunteur, "Emprunteur");

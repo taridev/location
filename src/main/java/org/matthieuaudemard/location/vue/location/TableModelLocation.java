@@ -8,6 +8,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.controlleur.ControlleurEmprunteur;
 import org.matthieuaudemard.location.controlleur.ControlleurExemplaire;
 import org.matthieuaudemard.location.controlleur.ControlleurLocation;
@@ -21,12 +22,14 @@ public class TableModelLocation extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = -807525530848101240L;
 	private ControlleurLocation ctrl;
+	final static Logger logger = Logger.getLogger(TableModelLocation.class);
+
 	private static final String[] nomColonnes = { "Identifiant", "Emprunteur", "Véhicule", "Assurance", "Retrait",
 			"Retour prévu", "Retour" };
-	private static final SimpleDateFormat DATEFORMAT = new SimpleDateFormat("yyyy-mm-dd");
+	private final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-mm-dd");
 
 	public TableModelLocation(ControlleurExemplaire ctrlExemplaire, ControlleurEmprunteur ctrlEmprunteur) {
-		System.out.println("TableModelLocation.TableModelLocation()");
+		logger.debug("Construction d'un TableModelLocation.");
 		ctrl = new ControlleurLocation(ctrlEmprunteur, ctrlExemplaire);
 		ctrl.find();
 
@@ -34,12 +37,10 @@ public class TableModelLocation extends AbstractTableModel {
 
 			@Override
 			public void tableChanged(TableModelEvent arg0) {
-				System.out.println(
+				logger.debug(
 						"TableModelLocation.TableModelLocation(...).new TableModelListener() {...}.tableChanged()>>");
 				ctrl.sort();
 				ctrl.save();
-				System.out.println(
-						"<<TableModelLocation.TableModelLocation(...).new TableModelListener() {...}.tableChanged()");
 			}
 		});
 
@@ -101,7 +102,8 @@ public class TableModelLocation extends AbstractTableModel {
 			result = selectedLocation.getNumeroLocation();
 			break;
 		case 1: // numEmprunteur + nomEmprunteur + prénomEmprunteur
-			result = selectedLocation.getEmprunteur().getNomEmprunteur() + " "
+			result = selectedLocation.getEmprunteur().getIdEmprunteur() + " " 
+					+ selectedLocation.getEmprunteur().getNomEmprunteur() + " "
 					+ selectedLocation.getEmprunteur().getPrenomEmprunteur();
 			break;
 		case 2: // immatricuation
@@ -112,14 +114,14 @@ public class TableModelLocation extends AbstractTableModel {
 			break;
 		case 4: // dateRetraitVéhicule
 			result = (selectedLocation.getDateRetrait() == null ? ""
-					: DATEFORMAT.format(selectedLocation.getDateRetrait()));
+					: dateformat.format(selectedLocation.getDateRetrait()));
 			break;
 		case 5: // dateRetourPrévuVéhicule
 			result = (selectedLocation.getDateRetourPrevue() == null ? ""
-					: DATEFORMAT.format(selectedLocation.getDateRetourPrevue()));
+					: dateformat.format(selectedLocation.getDateRetourPrevue()));
 			break;
 		case 6: // dateRetour
-			result = (selectedLocation.getDateRetour() == null ? "" : DATEFORMAT.format(selectedLocation.getDateRetour()));
+			result = (selectedLocation.getDateRetour() == null ? "" : dateformat.format(selectedLocation.getDateRetour()));
 			break;
 		default:
 			result = null;
@@ -132,7 +134,7 @@ public class TableModelLocation extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		Location l = ctrl.getValueAt(row);
-		System.out.println("TableModelEmprunteur.setValueAt()");
+		logger.debug("TableModelEmprunteur.setValueAt()");
 		switch (col) {
 		case 0: // numéroLocation
 			l.setNumeroLocation((Integer.parseInt(value.toString())));
@@ -148,29 +150,29 @@ public class TableModelLocation extends AbstractTableModel {
 			break;
 		case 4: // dateRetraitVéhicule
 			try {
-				l.setDateRetrait(DATEFORMAT.parse(value.toString()));
+				l.setDateRetrait(dateformat.parse(value.toString()));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			break;
 		case 5: // dateRetourPrévuVéhicule
 			try {
-				l.setDateRetourPrevue(DATEFORMAT.parse(value.toString()));
+				l.setDateRetourPrevue(dateformat.parse(value.toString()));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
 			break;
 		case 6: // dateRetour
 			try (Scanner scan = new Scanner(getValueAt(row, 1).toString())){
-				l.setDateRetour(DATEFORMAT.parse(value.toString()));
+				l.setDateRetour(dateformat.parse(value.toString()));
 				if(l.getDateRetour() != null) {
 					@SuppressWarnings("resource")
 					int eId = scan.nextInt();
 					Emprunteur e = ctrl.getCtrlEmprunteur().getById(eId);
 					e.ramener(ctrl.getById((int)getValueAt(row, 0)));
-					System.out.println("ramenage de :" + e.getIdEmprunteur());
+					logger.debug("ramenage de :" + e.getIdEmprunteur());
 					for(Location loc : e) {
-						System.out.println("\t" + loc);
+						logger.debug("\t" + loc);
 					}
 				}
 			} catch (ParseException e) {
@@ -209,7 +211,7 @@ public class TableModelLocation extends AbstractTableModel {
 		ctrl.delete(row);
 		
 		for(Location l : ctrl.getCtrlEmprunteur().getById(emprunteurId))
-			System.out.println(l);
+			logger.debug(l);
 	}
 
 	public ControlleurLocation getCtrl() {

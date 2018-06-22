@@ -4,12 +4,15 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
+import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.controlleur.ControlleurExemplaire;
 import org.matthieuaudemard.location.modele.Auto;
 import org.matthieuaudemard.location.modele.Exemplaire;
 import org.matthieuaudemard.location.modele.Moto;
 
 public class TableModelExemplaire extends AbstractTableModel {
+	
+	final static Logger logger = Logger.getLogger(TableModelExemplaire.class);
 
 	public ControlleurExemplaire getCtrl() {
 		return ctrl;
@@ -20,7 +23,7 @@ public class TableModelExemplaire extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = -8002268242479178842L;
 	private ControlleurExemplaire ctrl;
-	private final String[] nomColonnes = { "Immatriculation", "Marque", "Type", "Modèle/Cylindrée", "Kilométrage" };
+	private static final String[] nomColonnes = { "Immatriculation", "Marque", "Type", "Modèle/Cylindrée", "Kilométrage" };
 
 	public TableModelExemplaire() {
 		ctrl = new ControlleurExemplaire();
@@ -31,11 +34,11 @@ public class TableModelExemplaire extends AbstractTableModel {
 
 			@Override
 			public void tableChanged(TableModelEvent arg0) {
-				System.out.println(
+				logger.debug(
 						"TableModelExemplaire.TableModelExemplaire().new TableModelListener() {...}.tableChanged()>>");
 				ctrl.sort();
 				ctrl.save();
-				System.out.println(
+				logger.debug(
 						"<<TableModelExemplaire.TableModelExemplaire().new TableModelListener() {...}.tableChanged()");
 			}
 		});
@@ -43,9 +46,7 @@ public class TableModelExemplaire extends AbstractTableModel {
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		if (col != 0 && col != 2)
-			return true;
-		return false;
+		return (col != 0 && col != 2);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class TableModelExemplaire extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-System.out.println("TableModelExemplaire.getValueAt()");
+		logger.debug("TableModelExemplaire.getValueAt()");
 		Exemplaire e = ctrl.getValueAt(row);
 		Object result = null;
 
@@ -87,7 +88,7 @@ System.out.println("TableModelExemplaire.getValueAt()");
 			}
 			break;
 		case 4:
-			result = (int) e.getKilometrage();
+			result = e.getKilometrage();
 			break;
 		default:
 			result = null;
@@ -101,7 +102,7 @@ System.out.println("TableModelExemplaire.getValueAt()");
 	@Override
 	public void setValueAt(Object value, int row, int col) {
 		Exemplaire e = ctrl.getValueAt(row);
-		System.out.println("TableModelExemplaire.setValueAt()");
+		logger.debug("TableModelExemplaire.setValueAt()");
 		switch (col) {
 		case 0:
 			e.setimmatriculation(value.toString());

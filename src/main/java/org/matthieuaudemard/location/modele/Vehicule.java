@@ -2,6 +2,7 @@ package org.matthieuaudemard.location.modele;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author matthieu
@@ -23,7 +24,7 @@ public abstract class Vehicule implements Iterable<Exemplaire>{
 	 * @param m
 	 * @param ex
 	 */
-	public Vehicule(String m, ArrayList<Exemplaire> ex) {
+	public Vehicule(String m, List<Exemplaire> ex) {
 		this.marque = m;
 		this.exemplaires.addAll(ex);
 	}

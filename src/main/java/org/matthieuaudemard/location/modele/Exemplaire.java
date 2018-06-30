@@ -51,5 +51,10 @@ public class Exemplaire {
 	public String toString() {
 		return immatriculation + " " +  vehicule.toString() + " " + kilometrage;
 	}
-
+	
+	public void update(Exemplaire e) {
+		this.immatriculation = e.immatriculation;
+		this.kilometrage = e.kilometrage;
+		this.vehicule = e.vehicule;
+	}
 }

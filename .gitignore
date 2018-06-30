@@ -27,3 +27,4 @@ hs_err_pid*
 .sonar_lock
 report-task.txt
 .DS_Store
+/target/

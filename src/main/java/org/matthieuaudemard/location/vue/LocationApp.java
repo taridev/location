@@ -6,13 +6,15 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import org.matthieuaudemard.location.vue.emprunteur.JPanelEmprunteur;
+import org.matthieuaudemard.location.vue.emprunteur.JTableEmprunteur;
+import org.matthieuaudemard.location.vue.emprunteur.TableModelEmprunteur;
 import org.matthieuaudemard.location.vue.exemplaire.JPanelExemplaire;
 import org.matthieuaudemard.location.vue.location.JPanelLocation;
 
 public class LocationApp extends JFrame {
 	
 	private JTabbedPane tabPan = new JTabbedPane();
-	JPanelEmprunteur panelEmprunteur = new JPanelEmprunteur(this);
+	JPanelEmprunteur panelEmprunteur = new JPanelEmprunteur(this, new JTableEmprunteur(new TableModelEmprunteur()));
 	JPanelExemplaire panelExemplaire = new JPanelExemplaire(this);
 	JPanelLocation panelLocation;
 

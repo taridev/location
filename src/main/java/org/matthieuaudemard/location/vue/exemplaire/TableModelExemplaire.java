@@ -1,7 +1,5 @@
 package org.matthieuaudemard.location.vue.exemplaire;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
@@ -11,8 +9,8 @@ import org.matthieuaudemard.location.modele.Exemplaire;
 import org.matthieuaudemard.location.modele.Moto;
 
 public class TableModelExemplaire extends AbstractTableModel {
-	
-	final static Logger logger = Logger.getLogger(TableModelExemplaire.class);
+
+	static final Logger logger = Logger.getLogger(TableModelExemplaire.class);
 
 	public ControlleurExemplaire getCtrl() {
 		return ctrl;
@@ -22,25 +20,17 @@ public class TableModelExemplaire extends AbstractTableModel {
 	 * 
 	 */
 	private static final long serialVersionUID = -8002268242479178842L;
-	private ControlleurExemplaire ctrl;
-	private static final String[] nomColonnes = { "Immatriculation", "Marque", "Type", "Modèle/Cylindrée", "Kilométrage" };
+	private transient ControlleurExemplaire ctrl;
+	private static final String[] nomColonnes = { "Immatriculation", "Marque", "Type", "Modèle/Cylindrée",
+			"Kilométrage" };
 
 	public TableModelExemplaire() {
 		ctrl = new ControlleurExemplaire();
-
 		ctrl.find();
 
-		addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent arg0) {
-				logger.debug(
-						"TableModelExemplaire.TableModelExemplaire().new TableModelListener() {...}.tableChanged()>>");
-				ctrl.sort();
-				ctrl.save();
-				logger.debug(
-						"<<TableModelExemplaire.TableModelExemplaire().new TableModelListener() {...}.tableChanged()");
-			}
+		addTableModelListener(e -> {
+			ctrl.sort();
+			ctrl.save();
 		});
 	}
 
@@ -66,37 +56,23 @@ public class TableModelExemplaire extends AbstractTableModel {
 
 	@Override
 	public Object getValueAt(int row, int col) {
-		logger.debug("TableModelExemplaire.getValueAt()");
-		Exemplaire e = ctrl.getValueAt(row);
-		Object result = null;
 
 		switch (col) {
 		case 0:
-			result = e.getImmatriculation();
-			break;
+			return ctrl.getValueAt(row).getImmatriculation();
 		case 1:
-			result = e.getVehicule().getMarque();
-			break;
+			return ctrl.getValueAt(row).getVehicule().getMarque();
 		case 2:
-			result = (e.getVehicule() instanceof Auto) ? "Auto" : "Moto";
-			break;
+			return (ctrl.getValueAt(row).getVehicule() instanceof Auto) ? "Auto" : "Moto";
 		case 3:
-			if (e.getVehicule() instanceof Auto) {
-				result = ((Auto) e.getVehicule()).getModele();
-			} else if (e.getVehicule() instanceof Moto) {
-				result = ((Moto) e.getVehicule()).getCylindree();
-			}
-			break;
+			Exemplaire e = ctrl.getValueAt(row);
+			return (e.getVehicule() instanceof Auto) ? ((Auto) e.getVehicule()).getModele()
+					: ((Moto) e.getVehicule()).getCylindree();
 		case 4:
-			result = e.getKilometrage();
-			break;
+			return ctrl.getValueAt(row).getKilometrage();
 		default:
-			result = null;
-			break;
+			return null;
 		}
-
-		return result;
-
 	}
 
 	@Override
@@ -135,7 +111,7 @@ public class TableModelExemplaire extends AbstractTableModel {
 		try {
 			ctrl.insert(e);
 		} catch (Exception e1) {
-			e1.printStackTrace();
+			logger.error(e1.getStackTrace());
 		}
 	}
 

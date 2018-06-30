@@ -2,10 +2,9 @@ package org.matthieuaudemard.location.vue.location;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
@@ -21,8 +20,8 @@ public class TableModelLocation extends AbstractTableModel {
 	 * 
 	 */
 	private static final long serialVersionUID = -807525530848101240L;
-	private ControlleurLocation ctrl;
-	final static Logger logger = Logger.getLogger(TableModelLocation.class);
+	private transient ControlleurLocation ctrl;
+	static final Logger logger = Logger.getLogger(TableModelLocation.class);
 
 	private static final String[] nomColonnes = { "Identifiant", "Emprunteur", "Véhicule", "Assurance", "Retrait",
 			"Retour prévu", "Retour" };
@@ -33,34 +32,24 @@ public class TableModelLocation extends AbstractTableModel {
 		ctrl = new ControlleurLocation(ctrlEmprunteur, ctrlExemplaire);
 		ctrl.find();
 
-		addTableModelListener(new TableModelListener() {
-
-			@Override
-			public void tableChanged(TableModelEvent arg0) {
-				logger.debug(
-						"TableModelLocation.TableModelLocation(...).new TableModelListener() {...}.tableChanged()>>");
-				ctrl.sort();
-				ctrl.save();
-			}
+		addTableModelListener(evt -> {
+			ctrl.sort();
+			ctrl.save();
 		});
 
 	}
-	
-	// MODIF
-	
-	
-	/// fin modif
 
 	@Override
 	public boolean isCellEditable(int row, int col) {
-		switch(col) {
-			case 0:
-				return false;
-			case 4:
-				return false;
-			case 6:
-				return (getValueAt(row, 6) == "");
-			default: return true;
+		switch (col) {
+		case 0:
+			return false;
+		case 4:
+			return false;
+		case 6:
+			return (getValueAt(row, 6) == "");
+		default:
+			return true;
 		}
 	}
 
@@ -96,13 +85,13 @@ public class TableModelLocation extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		Location selectedLocation = ctrl.getValueAt(row);
 		Object result = null;
-		
+
 		switch (col) {
 		case 0: // numéroLocation
 			result = selectedLocation.getNumeroLocation();
 			break;
 		case 1: // numEmprunteur + nomEmprunteur + prénomEmprunteur
-			result = selectedLocation.getEmprunteur().getIdEmprunteur() + " " 
+			result = selectedLocation.getEmprunteur().getIdEmprunteur() + " "
 					+ selectedLocation.getEmprunteur().getNomEmprunteur() + " "
 					+ selectedLocation.getEmprunteur().getPrenomEmprunteur();
 			break;
@@ -121,7 +110,8 @@ public class TableModelLocation extends AbstractTableModel {
 					: dateformat.format(selectedLocation.getDateRetourPrevue()));
 			break;
 		case 6: // dateRetour
-			result = (selectedLocation.getDateRetour() == null ? "" : dateformat.format(selectedLocation.getDateRetour()));
+			result = (selectedLocation.getDateRetour() == null ? ""
+					: dateformat.format(selectedLocation.getDateRetour()));
 			break;
 		default:
 			result = null;
@@ -140,7 +130,11 @@ public class TableModelLocation extends AbstractTableModel {
 			l.setNumeroLocation((Integer.parseInt(value.toString())));
 			break;
 		case 1: // numEmprunteur
-			l.setEmprunteur(ctrl.getCtrlEmprunteur().getById(new Scanner(value.toString()).nextInt()));
+			try (Scanner scanner = new Scanner(value.toString())) {
+				l.setEmprunteur(ctrl.getCtrlEmprunteur().getById(scanner.nextInt()));
+			} catch (NoSuchElementException | IllegalStateException e) {
+				logger.error(e.getStackTrace());
+			}
 			break;
 		case 2: // immatriculation Véhicule
 			l.setExemplaire(ctrl.getCtrlExemplaire().getById(value.toString()));
@@ -152,31 +146,31 @@ public class TableModelLocation extends AbstractTableModel {
 			try {
 				l.setDateRetrait(dateformat.parse(value.toString()));
 			} catch (ParseException e) {
-				e.printStackTrace();
+				logger.error(e.getStackTrace());
 			}
 			break;
 		case 5: // dateRetourPrévuVéhicule
 			try {
 				l.setDateRetourPrevue(dateformat.parse(value.toString()));
 			} catch (ParseException e) {
-				e.printStackTrace();
+				logger.error(e.getStackTrace());
 			}
 			break;
 		case 6: // dateRetour
-			try (Scanner scan = new Scanner(getValueAt(row, 1).toString())){
+			try (Scanner scan = new Scanner(getValueAt(row, 1).toString())) {
 				l.setDateRetour(dateformat.parse(value.toString()));
-				if(l.getDateRetour() != null) {
+				if (l.getDateRetour() != null) {
 					@SuppressWarnings("resource")
 					int eId = scan.nextInt();
 					Emprunteur e = ctrl.getCtrlEmprunteur().getById(eId);
-					e.ramener(ctrl.getById((int)getValueAt(row, 0)));
+					e.ramener(ctrl.getById((int) getValueAt(row, 0)));
 					logger.debug("ramenage de :" + e.getIdEmprunteur());
-					for(Location loc : e) {
+					for (Location loc : e) {
 						logger.debug("\t" + loc);
 					}
 				}
 			} catch (ParseException e) {
-				e.printStackTrace();
+				logger.error(e.getStackTrace());
 			}
 			break;
 		default:
@@ -191,8 +185,8 @@ public class TableModelLocation extends AbstractTableModel {
 	public void addRow(Location l) {
 		try {
 			ctrl.insert(l);
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			logger.error(e.getStackTrace());
 		}
 	}
 
@@ -201,16 +195,16 @@ public class TableModelLocation extends AbstractTableModel {
 	 */
 	public void removeRow(int row) {
 		Scanner sc1 = new Scanner(getValueAt(row, 1).toString()); // Scanner de Emprunteur
-		
+
 		int emprunteurId = sc1.nextInt();
-		int locationId   = (int) getValueAt(row, 0);
-		
+		int locationId = (int) getValueAt(row, 0);
+
 		sc1.close();
-		
+
 		ctrl.getCtrlEmprunteur().getById(emprunteurId).removeLocation(locationId);
 		ctrl.delete(row);
-		
-		for(Location l : ctrl.getCtrlEmprunteur().getById(emprunteurId))
+
+		for (Location l : ctrl.getCtrlEmprunteur().getById(emprunteurId))
 			logger.debug(l);
 	}
 

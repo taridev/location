@@ -8,17 +8,17 @@ import java.util.List;
  * @author matthieu
  *
  */
-public abstract class Vehicule implements Iterable<Exemplaire>{
-	
+public abstract class Vehicule implements Iterable<Exemplaire> {
+
 	/**
 	 * 
 	 */
 	private String marque;
-	
+
 	/**
 	 * 
 	 */
-	private ArrayList<Exemplaire> exemplaires = new ArrayList<Exemplaire>();
+	private List<Exemplaire> exemplaires = new ArrayList<>();
 
 	/**
 	 * @param m
@@ -49,22 +49,23 @@ public abstract class Vehicule implements Iterable<Exemplaire>{
 	public void setMarque(String marque) {
 		this.marque = marque;
 	}
-	
-	public void setExemplaires(ArrayList<Exemplaire> exemplaires) {
+
+	public void setExemplaires(List<Exemplaire> exemplaires) {
 		this.exemplaires = exemplaires;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Iterable#iterator()
 	 */
 	@Override
 	public Iterator<Exemplaire> iterator() {
 		return exemplaires.iterator();
 	}
-	
+
 	public String toString() {
 		return marque;
 	}
-	
-	
+
 }

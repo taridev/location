@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.matthieuaudemard.location.modele.Emprunteur;
+import org.matthieuaudemard.location.modele.entitee.Emprunteur;
 
 /**
  * @author matthieu
@@ -118,7 +118,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 		find();
 		
 		for (Emprunteur e : emprunteurs) {
-			if (e.getIdEmprunteur() == id) {
+			if (e.getPrimaryKey() == id) {
 				logger.debug("<<ControlleurEmprunteur.findById()");
 				return e;
 			}
@@ -135,7 +135,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	 */
 	public Emprunteur getById(int id) {
 		for(Emprunteur e : this) 
-			if(e.getIdEmprunteur() == id) return e;
+			if(e.getPrimaryKey() == id) return e;
 		return null;
 	}
 
@@ -149,7 +149,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 
 		// On recherche l'id de l'élement à mettre à jour
 		for (Emprunteur e : emprunteurs)
-			if (e.getIdEmprunteur() == element.getIdEmprunteur())
+			if (e.getPrimaryKey() == element.getPrimaryKey())
 				e = new Emprunteur(element);
 
 	}
@@ -177,7 +177,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 
 
 		// Si l'identifiant de l'emprunteur n'est pas encore défini
-		if (element.getIdEmprunteur() == -1) {
+		if (element.getPrimaryKey() == -1) {
 			element.setIdEmprunteur(++lastInsertId);
 		}
 
@@ -186,9 +186,9 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 			throw new Exception("Unable to insert element " + element + ". Already exists");
 
 		// S'il existe déjà un emprunteur associé à cet identifiant alors Exception
-		else if (getById(element.getIdEmprunteur()) != null)
+		else if (getById(element.getPrimaryKey()) != null)
 			throw new Exception(
-					"Unable to insert element with index:" + element.getIdEmprunteur() + ". Index Already exists");
+					"Unable to insert element with index:" + element.getPrimaryKey() + ". Index Already exists");
 
 		// Insertion dans la liste
 		emprunteurs.add(element);
@@ -217,7 +217,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 			StringBuilder result = new StringBuilder();
 			result.append(lastInsertId + "\n");
 			for (Emprunteur e : emprunteurs) {
-				logger.debug("Saving id " + e.getIdEmprunteur() + "...");
+				logger.debug("Saving id " + e.getPrimaryKey() + "...");
 				result.append(e.toString() + "\n");
 			}
 			out.write(result.deleteCharAt(result.length() - 1).toString());
@@ -256,7 +256,7 @@ public class ControlleurEmprunteur implements Controlleur<Emprunteur>, Iterable<
 	 */
 	@Override
 	public void sort() {
-		Collections.sort(emprunteurs, (Emprunteur e1, Emprunteur e2)->e1.getIdEmprunteur() - e2.getIdEmprunteur());
+		Collections.sort(emprunteurs, (Emprunteur e1, Emprunteur e2)->e1.getPrimaryKey() - e2.getPrimaryKey());
 	}
 
 	

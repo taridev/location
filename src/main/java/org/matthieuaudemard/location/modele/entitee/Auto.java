@@ -1,4 +1,4 @@
-package org.matthieuaudemard.location.modele;
+package org.matthieuaudemard.location.modele.entitee;
 
 /**
  * @author matthieu

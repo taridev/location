@@ -4,9 +4,9 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.controlleur.ControlleurExemplaire;
-import org.matthieuaudemard.location.modele.Auto;
-import org.matthieuaudemard.location.modele.Exemplaire;
-import org.matthieuaudemard.location.modele.Moto;
+import org.matthieuaudemard.location.modele.entitee.Auto;
+import org.matthieuaudemard.location.modele.entitee.Exemplaire;
+import org.matthieuaudemard.location.modele.entitee.Moto;
 
 public class TableModelExemplaire extends AbstractTableModel {
 
@@ -59,7 +59,7 @@ public class TableModelExemplaire extends AbstractTableModel {
 
 		switch (col) {
 		case 0:
-			return ctrl.getValueAt(row).getImmatriculation();
+			return ctrl.getValueAt(row).getPrimaryKey();
 		case 1:
 			return ctrl.getValueAt(row).getVehicule().getMarque();
 		case 2:

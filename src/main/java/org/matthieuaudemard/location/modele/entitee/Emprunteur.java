@@ -1,4 +1,4 @@
-package org.matthieuaudemard.location.modele;
+package org.matthieuaudemard.location.modele.entitee;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,11 +10,10 @@ import org.apache.log4j.Logger;
  * @author matthieu
  *
  */
-public class Emprunteur implements Iterable<Location> {
+public class Emprunteur extends Entitee<Integer> implements Iterable<Location>  {
 
 	static final Logger logger = Logger.getLogger(Emprunteur.class);
 
-	private int idEmprunteur;
 	private String nomEmprunteur;
 	private String prenomEmprunteur;
 	private Adresse adresseEmprunteur;
@@ -27,15 +26,15 @@ public class Emprunteur implements Iterable<Location> {
 	 * @param prenomEmprunteur
 	 * @param adresseEmprunteur
 	 */
-	public Emprunteur(int idEmprunteur, String nomEmprunteur, String prenomEmprunteur, Adresse adresseEmprunteur) {
+	public Emprunteur(Integer idEmprunteur, String nomEmprunteur, String prenomEmprunteur, Adresse adresseEmprunteur) {
 		super();
-		this.idEmprunteur = idEmprunteur;
+		this.primaryKey = idEmprunteur;
 		this.nomEmprunteur = nomEmprunteur;
 		this.prenomEmprunteur = prenomEmprunteur;
 		this.adresseEmprunteur = adresseEmprunteur;
 	}
 	
-	public Emprunteur(int idEmprunteur, String nomEmprunteur, String prenomEmprunteur, String adresseEmprunteur) {
+	public Emprunteur(Integer idEmprunteur, String nomEmprunteur, String prenomEmprunteur, String adresseEmprunteur) {
 		this(idEmprunteur, nomEmprunteur, prenomEmprunteur, new Adresse(adresseEmprunteur));
 	}
 	
@@ -44,18 +43,15 @@ public class Emprunteur implements Iterable<Location> {
 	}
 	
 	public Emprunteur(Emprunteur e) {
-		this.idEmprunteur = e.idEmprunteur;
+		this.primaryKey = e.primaryKey;
 		this.nomEmprunteur = e.nomEmprunteur;
 		this.prenomEmprunteur = e.prenomEmprunteur;
 		this.adresseEmprunteur = e.adresseEmprunteur;
 		this.locations = e.locations;
 	}
 	
-	public int getIdEmprunteur() {
-		return idEmprunteur;
-	}
 	public void setIdEmprunteur(int idEmprunteur) {
-		this.idEmprunteur = idEmprunteur;
+		this.primaryKey = idEmprunteur;
 	}
 	public String getNomEmprunteur() {
 		return nomEmprunteur;
@@ -86,7 +82,7 @@ public class Emprunteur implements Iterable<Location> {
 	
 	public void removeLocation(int locationId) {
 		for(Location l : locations)
-			if(l.getNumeroLocation() == locationId)
+			if(l.getPrimaryKey() == locationId)
 				locations.remove(l);
 	}
 
@@ -109,7 +105,7 @@ public class Emprunteur implements Iterable<Location> {
 	}
 	
 	public String toString() {
-		return idEmprunteur + " " + nomEmprunteur + " " + prenomEmprunteur + " " + adresseEmprunteur;
+		return primaryKey + " " + nomEmprunteur + " " + prenomEmprunteur + " " + adresseEmprunteur;
 	}
 
 	public void setLocations(List<Location> l) {

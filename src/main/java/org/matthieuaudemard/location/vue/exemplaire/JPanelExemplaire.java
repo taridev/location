@@ -17,9 +17,9 @@ import javax.swing.table.TableRowSorter;
 
 import org.apache.log4j.Logger;
 import org.matthieu.location.presentation.AbstractTablePanel;
-import org.matthieuaudemard.location.modele.Auto;
-import org.matthieuaudemard.location.modele.Exemplaire;
-import org.matthieuaudemard.location.modele.Moto;
+import org.matthieuaudemard.location.modele.entitee.Auto;
+import org.matthieuaudemard.location.modele.entitee.Exemplaire;
+import org.matthieuaudemard.location.modele.entitee.Moto;
 
 @SuppressWarnings("serial")
 public class JPanelExemplaire extends AbstractTablePanel {

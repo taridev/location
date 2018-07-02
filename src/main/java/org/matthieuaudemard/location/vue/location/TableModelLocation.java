@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.controlleur.ControlleurEmprunteur;
 import org.matthieuaudemard.location.controlleur.ControlleurExemplaire;
 import org.matthieuaudemard.location.controlleur.ControlleurLocation;
-import org.matthieuaudemard.location.modele.Emprunteur;
-import org.matthieuaudemard.location.modele.Location;
+import org.matthieuaudemard.location.modele.entitee.Emprunteur;
+import org.matthieuaudemard.location.modele.entitee.Location;
 
 public class TableModelLocation extends AbstractTableModel {
 
@@ -88,15 +88,15 @@ public class TableModelLocation extends AbstractTableModel {
 
 		switch (col) {
 		case 0: // numéroLocation
-			result = selectedLocation.getNumeroLocation();
+			result = selectedLocation.getPrimaryKey();
 			break;
 		case 1: // numEmprunteur + nomEmprunteur + prénomEmprunteur
-			result = selectedLocation.getEmprunteur().getIdEmprunteur() + " "
+			result = selectedLocation.getEmprunteur().getPrimaryKey() + " "
 					+ selectedLocation.getEmprunteur().getNomEmprunteur() + " "
 					+ selectedLocation.getEmprunteur().getPrenomEmprunteur();
 			break;
 		case 2: // immatricuation
-			result = selectedLocation.getExemplaire().getImmatriculation();
+			result = selectedLocation.getExemplaire().getPrimaryKey();
 			break;
 		case 3: // assurance
 			result = selectedLocation.getAssurance();
@@ -164,7 +164,7 @@ public class TableModelLocation extends AbstractTableModel {
 					int eId = scan.nextInt();
 					Emprunteur e = ctrl.getCtrlEmprunteur().getById(eId);
 					e.ramener(ctrl.getById((int) getValueAt(row, 0)));
-					logger.debug("ramenage de :" + e.getIdEmprunteur());
+					logger.debug("ramenage de :" + e.getPrimaryKey());
 					for (Location loc : e) {
 						logger.debug("\t" + loc);
 					}

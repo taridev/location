@@ -18,7 +18,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
@@ -28,85 +27,41 @@ import org.apache.log4j.Logger;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-import org.matthieuaudemard.location.controlleur.ControlleurEmprunteur;
-import org.matthieuaudemard.location.controlleur.ControlleurExemplaire;
-import org.matthieuaudemard.location.modele.Emprunteur;
-import org.matthieuaudemard.location.modele.Exemplaire;
-import org.matthieuaudemard.location.modele.Location;
+import org.matthieu.location.presentation.AbstractTablePanel;
+import org.matthieuaudemard.location.modele.entitee.Emprunteur;
+import org.matthieuaudemard.location.modele.entitee.Exemplaire;
+import org.matthieuaudemard.location.modele.entitee.Location;
 import org.matthieuaudemard.location.vue.datepicker.DateLabelFormatter;
 import org.matthieuaudemard.location.vue.exemplaire.TableModelExemplaire;
 
-public class JPanelLocation extends JPanel {
+@SuppressWarnings("serial")
+public class JPanelLocation extends AbstractTablePanel {
 
 	private static final Logger logger = LogManager.getLogger(JPanelLocation.class);
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -4859755050272640053L;
-
-	JTableLocation tblLocation;
-
-	JScrollPane scrollPan;
-
-	Window wParent;
-
-	JPanel panelOption = new JPanel();
-
-	JButton btnAdd = new JButton("+");
-	JButton btnDel = new JButton("-");
-	JButton btnPrint = new JButton("Imprimer");
-	JButton btnPDF = new JButton("PDF");
-
-	JTextField txtSearch = new JTextField(16);
-
-	public JPanelLocation(ControlleurExemplaire ctrlExemplaire, ControlleurEmprunteur ctrlEmprunteur, JFrame parent) {
-		super();
-		tblLocation = new JTableLocation(new TableModelLocation(ctrlExemplaire, ctrlEmprunteur));
-		this.wParent = parent;
+	public JPanelLocation(JFrame parent, JTableLocation table) {
+		super(parent, table);
 		prepareGUI();
 		prepareActionListener();
 	}
 
-	private void prepareGUI() {
-
-		GridBagConstraints c = new GridBagConstraints();
-
-		setLayout(new BorderLayout());
-
-		c.gridx = 0;
-		c.gridy = 0;
-
-		panelOption.setLayout(new GridBagLayout());
-
-		panelOption.add(btnAdd, c);
-		c.gridx++;
-		panelOption.add(btnDel, c);
-		c.gridx++;
-		panelOption.add(btnPrint, c);
-		c.gridx++;
-		panelOption.add(btnPDF, c);
-		c.gridx++;
-		c.fill = GridBagConstraints.NONE;
-		c.anchor = GridBagConstraints.NORTHEAST;
-		panelOption.add(txtSearch, c);
-
-		scrollPan = new JScrollPane(tblLocation);
-		add(scrollPan, BorderLayout.CENTER);
-		add(panelOption, BorderLayout.NORTH);
+	@Override
+	protected void prepareGUI() {
+		super.prepareGUI();
+		txtSearch.setVisible(true);
 	}
 
-	private void prepareActionListener() {
-
+	@Override
+	protected void prepareActionListener() {
 		btnAdd.addActionListener(evt -> {
 			DialogLocation d = new DialogLocation(wParent);
 			d.setVisible(true);
 		});
 
 		btnDel.addActionListener(evt -> {
-			int selectedRow = tblLocation.getSelectedRow();
-			if (selectedRow > -1) {
-				TableModelLocation model = ((TableModelLocation) tblLocation.getModel());
+			int selectedRow = table.getSelectedRow();
+			if (selectedRow >= 0) {
+				TableModelLocation model = ((TableModelLocation) table.getModel());
 				model.removeRow(selectedRow);
 				model.fireTableDataChanged();
 			}
@@ -116,9 +71,9 @@ public class JPanelLocation extends JPanel {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void keyReleased(KeyEvent e) {
+			public void keyReleased(KeyEvent evt) {
 
-				String txt = ((JTextField) e.getSource()).getText().toLowerCase();
+				String txt = ((JTextField) evt.getSource()).getText().toLowerCase();
 				RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
 					public boolean include(Entry<?, ?> entry) {
 						return ((String) entry.getValue(1)).toLowerCase().contains(txt)
@@ -127,9 +82,9 @@ public class JPanelLocation extends JPanel {
 				};
 
 				if (txt.length() == 0) {
-					((TableRowSorter<TableModelExemplaire>) tblLocation.getRowSorter()).setRowFilter(null);
+					((TableRowSorter<TableModelExemplaire>) table.getRowSorter()).setRowFilter(null);
 				} else {
-					((TableRowSorter<TableModelExemplaire>) tblLocation.getRowSorter()).setRowFilter(filter);
+					((TableRowSorter<TableModelExemplaire>) table.getRowSorter()).setRowFilter(filter);
 				}
 
 			}
@@ -138,11 +93,6 @@ public class JPanelLocation extends JPanel {
 	}
 
 	class DialogLocation extends JDialog {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 81849338570652284L;
 
 		JTextField txtDateRetrait = new JTextField(16);
 		JTextField txtDateRetour = new JTextField(16);
@@ -178,13 +128,13 @@ public class JPanelLocation extends JPanel {
 
 			GridBagConstraints c = new GridBagConstraints();
 
-			for (Emprunteur e : ((TableModelLocation) tblLocation.getModel()).getCtrl().getCtrlEmprunteur()) {
+			for (Emprunteur e : ((TableModelLocation) table.getModel()).getCtrl().getCtrlEmprunteur()) {
 				comboEmprunteur
-						.addItem(e.getIdEmprunteur() + " " + e.getNomEmprunteur() + " " + e.getPrenomEmprunteur());
+						.addItem(e.getPrimaryKey() + " " + e.getNomEmprunteur() + " " + e.getPrenomEmprunteur());
 			}
 
-			for (Exemplaire e : ((TableModelLocation) tblLocation.getModel()).getCtrl().getCtrlExemplaire()) {
-				comboExemplaire.addItem(e.getImmatriculation());
+			for (Exemplaire e : ((TableModelLocation) table.getModel()).getCtrl().getCtrlExemplaire()) {
+				comboExemplaire.addItem(e.getPrimaryKey());
 			}
 
 			setSize(500, 300);
@@ -240,9 +190,9 @@ public class JPanelLocation extends JPanel {
 
 		private void prepareActionListener() {
 			btnCreer.addActionListener(ev -> {
-				Emprunteur emprunteur2Add = ((TableModelLocation) tblLocation.getModel()).getCtrl().getCtrlEmprunteur()
+				Emprunteur emprunteur2Add = ((TableModelLocation) table.getModel()).getCtrl().getCtrlEmprunteur()
 						.getValueAt(comboEmprunteur.getSelectedIndex());
-				Exemplaire exemplaire2Add = ((TableModelLocation) tblLocation.getModel()).getCtrl().getCtrlExemplaire()
+				Exemplaire exemplaire2Add = ((TableModelLocation) table.getModel()).getCtrl().getCtrlExemplaire()
 						.getValueAt(comboExemplaire.getSelectedIndex());
 
 				Date dateRetrait = null;
@@ -260,11 +210,11 @@ public class JPanelLocation extends JPanel {
 					logger.error(e.getStackTrace());
 				}
 
-				((TableModelLocation) tblLocation.getModel()).addRow(new Location(emprunteur2Add, exemplaire2Add,
+				((TableModelLocation) table.getModel()).addRow(new Location(emprunteur2Add, exemplaire2Add,
 						dateRetrait, dateRetourPrevue, chkAssurance.isSelected()));
-				((TableModelLocation) tblLocation.getModel()).fireTableDataChanged();
-				((TableModelLocation) tblLocation.getModel()).getCtrl().save();
-				((TableModelLocation) tblLocation.getModel()).getCtrl().find();
+				((TableModelLocation) table.getModel()).fireTableDataChanged();
+				((TableModelLocation) table.getModel()).getCtrl().save();
+				((TableModelLocation) table.getModel()).getCtrl().find();
 				dispose();
 			});
 

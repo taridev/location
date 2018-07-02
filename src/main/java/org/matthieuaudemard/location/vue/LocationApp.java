@@ -10,6 +10,8 @@ import org.matthieuaudemard.location.vue.emprunteur.JTableEmprunteur;
 import org.matthieuaudemard.location.vue.emprunteur.TableModelEmprunteur;
 import org.matthieuaudemard.location.vue.exemplaire.JPanelExemplaire;
 import org.matthieuaudemard.location.vue.location.JPanelLocation;
+import org.matthieuaudemard.location.vue.location.JTableLocation;
+import org.matthieuaudemard.location.vue.location.TableModelLocation;
 
 public class LocationApp extends JFrame {
 	
@@ -29,7 +31,7 @@ public class LocationApp extends JFrame {
 	 */
 	public LocationApp(String titre) {
 		super(titre);
-		panelLocation = new JPanelLocation(panelExemplaire.getTableModel().getCtrl(), panelEmprunteur.getTableModel().getCtrl(), this);
+		panelLocation = new JPanelLocation(this, new JTableLocation(new TableModelLocation(panelExemplaire.getTableModel().getCtrl(), panelEmprunteur.getTableModel().getCtrl())));
 		tabPan.add(panelEmprunteur, "Emprunteur");
 		tabPan.add(panelExemplaire, "Exemplaire");
 		tabPan.add(panelLocation, "Location");

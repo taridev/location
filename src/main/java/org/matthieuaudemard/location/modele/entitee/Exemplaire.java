@@ -1,11 +1,6 @@
-package org.matthieuaudemard.location.modele;
+package org.matthieuaudemard.location.modele.entitee;
 
-public class Exemplaire {
-	
-	/**
-	 * 
-	 */
-	private String immatriculation;
+public class Exemplaire extends Entitee<String>{
 	
 	/**
 	 * 
@@ -18,18 +13,13 @@ public class Exemplaire {
 	private Vehicule vehicule;
 
 	public Exemplaire(String numero, Vehicule vehicule, int kilometrage) {
-		super();
-		this.immatriculation = numero;
+		this.primaryKey = numero;
 		this.kilometrage = kilometrage;
 		this.vehicule = vehicule;
 	}
 
-	public String getImmatriculation() {
-		return immatriculation;
-	}
-
 	public void setimmatriculation(String numero) {
-		this.immatriculation = numero;
+		this.primaryKey = numero;
 	}
 
 	public int getKilometrage() {
@@ -49,11 +39,11 @@ public class Exemplaire {
 	}
 	
 	public String toString() {
-		return immatriculation + " " +  vehicule.toString() + " " + kilometrage;
+		return primaryKey + " " +  vehicule.toString() + " " + kilometrage;
 	}
 	
 	public void update(Exemplaire e) {
-		this.immatriculation = e.immatriculation;
+		this.primaryKey = e.primaryKey;
 		this.kilometrage = e.kilometrage;
 		this.vehicule = e.vehicule;
 	}

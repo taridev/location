@@ -4,8 +4,8 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 
-import org.matthieuaudemard.location.modele.Emprunteur;
-import org.matthieuaudemard.location.modele.Exemplaire;
+import org.matthieuaudemard.location.modele.entitee.Emprunteur;
+import org.matthieuaudemard.location.modele.entitee.Exemplaire;
 
 public class JTableLocation extends JTable {
 
@@ -20,11 +20,11 @@ public class JTableLocation extends JTable {
 		JComboBox<String> comboExemplaire   = new JComboBox<>();
 		
 		for(Emprunteur e : ((TableModelLocation)getModel()).getCtrl().getCtrlEmprunteur() ) {
-			comboEmprunteur.addItem(e.getIdEmprunteur() + " " + e.getNomEmprunteur() + " " + e.getPrenomEmprunteur());
+			comboEmprunteur.addItem(e.getPrimaryKey() + " " + e.getNomEmprunteur() + " " + e.getPrenomEmprunteur());
 		}
 		
 		for(Exemplaire e : ((TableModelLocation)getModel()).getCtrl().getCtrlExemplaire() ) {
-			comboExemplaire.addItem(e.getImmatriculation());
+			comboExemplaire.addItem(e.getPrimaryKey());
 		}
 		
 		comboEmprunteur.setEditable(false);

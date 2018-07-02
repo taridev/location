@@ -1,4 +1,4 @@
-package org.matthieuaudemard.location.modele;
+package org.matthieuaudemard.location.modele.entitee;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,7 +7,7 @@ import java.util.Date;
  * @author matthieu
  *
  */
-public class Location {
+public class Location extends Entitee<Integer>{
 	
 	public Exemplaire getExemplaire() {
 		return exemplaire;
@@ -20,11 +20,6 @@ public class Location {
 	public void setAssurance(boolean assurance) {
 		this.assurance = assurance;
 	}
-
-	/**
-	 * 
-	 */
-	private Integer numeroLocation = -1;
 	/**
 	 * 
 	 */
@@ -60,7 +55,7 @@ public class Location {
 	public Location(Integer numeroLocation, Emprunteur emprunteur, Exemplaire exemplaire, Date dateRetrait, Date dateRetourPrevue,
 			Date dateRetour, boolean assurance) {
 		super();
-		this.numeroLocation = numeroLocation;
+		this.primaryKey = numeroLocation;
 		this.emprunteur = emprunteur;
 		this.exemplaire = exemplaire;
 		this.dateRetrait = dateRetrait;
@@ -74,12 +69,8 @@ public class Location {
 		this(-1, emprunteur, exemplaire, dateRetrait, dateRetourPrevue, null, assurance);
 	}
 
-	public Integer getNumeroLocation() {
-		return numeroLocation;
-	}
-
 	public void setNumeroLocation(Integer numeroLocation) {
-		this.numeroLocation = numeroLocation;
+		this.primaryKey = numeroLocation;
 	}
 
 	public Emprunteur getEmprunteur() {
@@ -125,7 +116,7 @@ public class Location {
 	@Override
 	public String toString() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-		return numeroLocation + " " + emprunteur.getIdEmprunteur() + " " + exemplaire.getImmatriculation() + " " + (assurance ? "true" : "false") + " " + 
+		return primaryKey + " " + emprunteur.getPrimaryKey() + " " + exemplaire.getPrimaryKey() + " " + (assurance ? "true" : "false") + " " + 
 				format.format(dateRetrait) + " " + format.format(dateRetourPrevue) + " " + (dateRetour != null ? format.format(dateRetour) : "");
 	}
 

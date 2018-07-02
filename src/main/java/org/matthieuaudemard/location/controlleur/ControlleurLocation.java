@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import org.apache.log4j.Logger;
-import org.matthieuaudemard.location.modele.Location;
+import org.matthieuaudemard.location.modele.entitee.Location;
 
 /**
  * @author matthieu
@@ -62,7 +62,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	@Override
 	public void find() {
 		
-		logger.debug("ControlleurLocation.find()>>");
+		logger.debug("Appel de la méthode find().");
 		
 		File base = new File(source);
 		
@@ -106,8 +106,6 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 
 		} catch (NullPointerException|FileNotFoundException e) {
 			logger.error(e.getMessage());
-		} finally {
-			logger.debug("<<ControlleurLocation.find()");
 		}
 		
 	}
@@ -120,7 +118,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 		find();
 		
 		for(Location l : this)
-			if(l.getNumeroLocation() == index)
+			if(l.getPrimaryKey() == index)
 				return l;
 		
 		return null;
@@ -135,14 +133,14 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 		ArrayList<Location> result = new ArrayList<>();
 		for(Location l : this) {
 			if(l.getEmprunteur() == null) continue;
-			if(l.getEmprunteur().getIdEmprunteur() == id) result.add(l);
+			if(l.getEmprunteur().getPrimaryKey() == id) result.add(l);
 		}
 		return result;
 	}
 	
 	public Location getById(int id) {
 		for(Location l : locations)
-			if(l.getNumeroLocation() == id) return l;
+			if(l.getPrimaryKey() == id) return l;
 		return null;
 	}
 
@@ -170,11 +168,11 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	@Override
 	public void insert(Location element) throws Exception {
 		
-		logger.debug("ControlleurEmprunteur.insert()>>");
+		logger.debug("Appel de la méthode insert()." + element);
 
 
 		// Si l'identifiant de l'emprunteur n'est pas encore défini
-		if (element.getNumeroLocation() == -1) {
+		if (element.getPrimaryKey() == -1) {
 			element.setNumeroLocation(++lastInsertId);
 			element.getEmprunteur().louer(element);
 		}
@@ -184,9 +182,9 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 			throw new Exception("Unable to insert element " + element + ". Already exists");
 
 		// S'il existe déjà un emprunteur associé à cet identifiant alors Exception
-		else if (getById(element.getNumeroLocation()) != null)
+		else if (getById(element.getPrimaryKey()) != null)
 			throw new Exception(
-					"Unable to insert element with index:" + element.getNumeroLocation() + ". Index Already exists");
+					"Unable to insert element with index:" + element.getPrimaryKey() + ". Index Already exists");
 
 		// Insertion dans la liste
 		locations.add(element);
@@ -230,7 +228,7 @@ public class ControlleurLocation implements Controlleur<Location>, Iterable<Loca
 	public void sort() {
 		Collections.sort(
 				locations, 
-				(Location loc1, Location loc2) -> loc1.getNumeroLocation().compareTo(loc2.getNumeroLocation())
+				(Location loc1, Location loc2) -> loc1.getPrimaryKey().compareTo(loc2.getPrimaryKey())
 		);
 	}
 

@@ -74,6 +74,8 @@ public abstract class AbstractTablePanel extends JPanel {
 		scrollPan = new JScrollPane(table);
 		add(scrollPan, BorderLayout.CENTER);
 		add(panelOption, BorderLayout.NORTH);
+		txtSearch.setVisible(false);
+		comboFiltre.setVisible(false);
 	}
 
 	protected void prepareActionListener() {

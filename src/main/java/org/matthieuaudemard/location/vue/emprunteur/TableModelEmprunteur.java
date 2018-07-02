@@ -5,8 +5,8 @@ import javax.swing.table.AbstractTableModel;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.matthieuaudemard.location.controlleur.ControlleurEmprunteur;
-import org.matthieuaudemard.location.modele.Adresse;
-import org.matthieuaudemard.location.modele.Emprunteur;
+import org.matthieuaudemard.location.modele.entitee.Adresse;
+import org.matthieuaudemard.location.modele.entitee.Emprunteur;
 
 public class TableModelEmprunteur extends AbstractTableModel {
 
@@ -61,7 +61,7 @@ public class TableModelEmprunteur extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		switch (col) {
 		case 0:
-			return ctrl.getValueAt(row).getIdEmprunteur();
+			return ctrl.getValueAt(row).getPrimaryKey();
 		case 1:
 			return ctrl.getValueAt(row).getNomEmprunteur();
 		case 2:

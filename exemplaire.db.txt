@@ -1,4 +1,4 @@
-AA-222-AA Peugeot Auto 207 20000
+AA-222-AA Peugeot Auto 206 20000
 AA-230-AA Honda Moto 250 1000
 AA-24-AA Peugeot Auto 208 20000
 AKK-239-91 Peugeot Auto 208 20000

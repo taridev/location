@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 import org.apache.log4j.Logger;
 import org.matthieu.location.presentation.AbstractTablePanel;
-import org.matthieuaudemard.location.modele.Emprunteur;
+import org.matthieuaudemard.location.modele.entitee.Emprunteur;
 
 @SuppressWarnings("serial")
 public class JPanelEmprunteur extends AbstractTablePanel {

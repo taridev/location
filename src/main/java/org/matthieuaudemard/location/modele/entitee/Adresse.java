@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.matthieuaudemard.location.modele;
+package org.matthieuaudemard.location.modele.entitee;
 
 import java.util.NoSuchElementException;
 import java.util.Scanner;

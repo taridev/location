@@ -14,9 +14,9 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
-import org.matthieuaudemard.location.modele.Auto;
-import org.matthieuaudemard.location.modele.Exemplaire;
-import org.matthieuaudemard.location.modele.Moto;
+import org.matthieuaudemard.location.modele.entitee.Auto;
+import org.matthieuaudemard.location.modele.entitee.Exemplaire;
+import org.matthieuaudemard.location.modele.entitee.Moto;
 
 public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<Exemplaire> {
 
@@ -95,7 +95,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	public Exemplaire findById(String immatriculation) {
 		find();
 		for (Exemplaire e : exemplaires)
-			if (e.getImmatriculation().equals(immatriculation))
+			if (e.getPrimaryKey().equals(immatriculation))
 				return e;
 		return null;
 	}
@@ -114,7 +114,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 
 	public Exemplaire getById(String immatriculation) {
 		for (Exemplaire e : this)
-			if (e.getImmatriculation().equals(immatriculation))
+			if (e.getPrimaryKey().equals(immatriculation))
 				return e;
 		return null;
 	}
@@ -125,7 +125,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 		
 		// On recherche l'immatriculation de l'élement à mettre à jour
 		exemplaires.stream()
-			.filter(e -> e.getImmatriculation() == element.getImmatriculation())
+			.filter(e -> e.getPrimaryKey() == element.getPrimaryKey())
 			.forEach(e -> e.update(element));
 
 		save();
@@ -147,9 +147,9 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 
 		// S'il existe déjà un exemplaire associé à cette immatriculation alors
 		// Exception
-		else if (getById(element.getImmatriculation()) != null)
+		else if (getById(element.getPrimaryKey()) != null)
 			throw new Exception(
-					"Unable to insert element with index:" + element.getImmatriculation() + ". Index Already exists");
+					"Unable to insert element with index:" + element.getPrimaryKey() + ". Index Already exists");
 
 		// Insertion dans la liste
 		exemplaires.add(element);
@@ -171,7 +171,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 				BufferedWriter out = new BufferedWriter(fstream)) {
 			StringBuilder result = new StringBuilder();
 			for (Exemplaire e : exemplaires) {
-				logger.debug("Saving id " + e.getImmatriculation() + "...");
+				logger.debug("Saving id " + e.getPrimaryKey() + "...");
 				result.append(e.toString() + "\n");
 			}
 			out.write(result.deleteCharAt(result.length() - 1).toString());
@@ -188,7 +188,7 @@ public class ControlleurExemplaire implements Controlleur<Exemplaire>, Iterable<
 	@Override
 	public void sort() {
 		Collections.sort(exemplaires,
-				(Exemplaire e1, Exemplaire e2) -> e1.getImmatriculation().compareTo(e2.getImmatriculation()));
+				(Exemplaire e1, Exemplaire e2) -> e1.getPrimaryKey().compareTo(e2.getPrimaryKey()));
 	}
 
 	@Override

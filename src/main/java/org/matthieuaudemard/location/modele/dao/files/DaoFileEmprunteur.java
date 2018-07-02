@@ -1,15 +1,16 @@
-package org.matthieuaudemard.location.modele.dao;
+package org.matthieuaudemard.location.modele.dao.files;
 
-import java.util.List;
-
+import org.matthieuaudemard.location.modele.dao.AbstractDaoFile;
+import org.matthieuaudemard.location.modele.dao.interfaces.IDao;
+import org.matthieuaudemard.location.modele.dao.interfaces.IDaoEmprunteur;
 import org.matthieuaudemard.location.modele.entitee.Emprunteur;
 
-public class DaoFileEmprunteur extends AbstractDaoFile<Emprunteur, Integer> {
+public class DaoFileEmprunteur extends AbstractDaoFile<Emprunteur, Integer> implements IDaoEmprunteur, IDao<Emprunteur, Integer>{
 	
 	DaoFileLocation daoLocation = null;
 
-	public DaoFileEmprunteur(String filename, List<String> shema) {
-		super(filename, shema);
+	public DaoFileEmprunteur(String filename) {
+		super(filename);
 	}
 
 	@Override

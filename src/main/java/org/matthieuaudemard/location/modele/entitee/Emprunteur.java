@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
  * @author matthieu
  *
  */
-public class Emprunteur extends Entitee<Integer> implements Iterable<Location>  {
+public class Emprunteur extends AbstractEntitee<Integer> implements Iterable<Location>  {
 
 	static final Logger logger = Logger.getLogger(Emprunteur.class);
 

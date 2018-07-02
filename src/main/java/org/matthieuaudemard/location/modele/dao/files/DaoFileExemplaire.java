@@ -1,13 +1,13 @@
-package org.matthieuaudemard.location.modele.dao;
+package org.matthieuaudemard.location.modele.dao.files;
 
-import java.util.List;
-
+import org.matthieuaudemard.location.modele.dao.AbstractDaoFile;
+import org.matthieuaudemard.location.modele.dao.interfaces.IDaoExemplaire;
 import org.matthieuaudemard.location.modele.entitee.Exemplaire;
 
-public class DaoFileExemplaire extends AbstractDaoFile<Exemplaire, String> {
+public class DaoFileExemplaire extends AbstractDaoFile<Exemplaire, String> implements IDaoExemplaire {
 
-	public DaoFileExemplaire(String filename, List<String> shema) {
-		super(filename, shema);
+	public DaoFileExemplaire(String filename) {
+		super(filename);
 	}
 
 	@Override

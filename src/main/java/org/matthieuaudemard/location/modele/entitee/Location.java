@@ -7,7 +7,7 @@ import java.util.Date;
  * @author matthieu
  *
  */
-public class Location extends Entitee<Integer>{
+public class Location extends AbstractEntitee<Integer>{
 	
 	public Exemplaire getExemplaire() {
 		return exemplaire;

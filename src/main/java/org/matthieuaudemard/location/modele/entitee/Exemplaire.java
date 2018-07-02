@@ -1,6 +1,6 @@
 package org.matthieuaudemard.location.modele.entitee;
 
-public class Exemplaire extends Entitee<String>{
+public class Exemplaire extends AbstractEntitee<String>{
 	
 	/**
 	 * 

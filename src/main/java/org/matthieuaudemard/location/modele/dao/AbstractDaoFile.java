@@ -5,19 +5,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.matthieuaudemard.location.modele.entitee.Entitee;
+import org.matthieuaudemard.location.modele.dao.interfaces.IDao;
+import org.matthieuaudemard.location.modele.entitee.AbstractEntitee;
 
 
-public abstract class AbstractDaoFile<T extends Entitee<N>, N extends Comparable<N>> implements Dao<T, N> {
+public abstract class AbstractDaoFile<T extends AbstractEntitee<N>, N extends Comparable<N>> implements IDao<T, N> {
 
-	List<T> elements = null;
+	protected List<T> elements = null;
 	File file = null;
-	List<String> shema = null;
 	
-	public AbstractDaoFile(String filename, List<String> shema) {
+	public AbstractDaoFile(String filename) {
 		elements = new ArrayList<>();
 		file = new File(filename);
-		this.shema = shema;
 		load();
 	}
 

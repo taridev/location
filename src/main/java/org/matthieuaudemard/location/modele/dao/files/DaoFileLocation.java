@@ -34,10 +34,4 @@ public class DaoFileLocation extends AbstractDaoFile<Location, Integer> implemen
 		
 	}
 
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

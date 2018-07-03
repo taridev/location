@@ -39,7 +39,7 @@ public class Emprunteur extends AbstractEntitee<Integer> implements Iterable<Loc
 	}
 	
 	public Emprunteur(String nomEmprunteur, String prenomEmprunteur, String adresseEmprunteur) {
-		this(-1, nomEmprunteur, prenomEmprunteur, new Adresse(adresseEmprunteur));
+		this(null, nomEmprunteur, prenomEmprunteur, new Adresse(adresseEmprunteur));
 	}
 	
 	public Emprunteur(Emprunteur e) {
@@ -102,10 +102,6 @@ public class Emprunteur extends AbstractEntitee<Integer> implements Iterable<Loc
 	@Override
 	public Iterator<Location> iterator() {
 		return locations.iterator();
-	}
-	
-	public String toString() {
-		return primaryKey + " " + nomEmprunteur + " " + prenomEmprunteur + " " + adresseEmprunteur;
 	}
 
 	public void setLocations(List<Location> l) {

@@ -28,10 +28,4 @@ public class DaoFileExemplaire extends AbstractDaoFile<Exemplaire, String> imple
 		
 	}
 
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -19,21 +19,15 @@ public class DaoFileEmprunteur extends AbstractDaoFile<Emprunteur, Integer> impl
 	}
 
 	@Override
-	public boolean delete(Emprunteur element) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void load() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void save() {
+	public boolean delete(Emprunteur element) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
 }
